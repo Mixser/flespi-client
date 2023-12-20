@@ -158,7 +158,7 @@ func (c *Client) NewLimit(limit Limit) (*Limit, error) {
 
 func (c *Client) UpdateLimit(limitId int64, limit Limit) (*Limit, error) {
 	limit.Id = 0
-	
+
 	httpReqBody, err := json.Marshal(limit)
 
 	if err != nil {
