@@ -193,3 +193,20 @@ func (c *Client) UpdateLimit(limitId int64, limit Limit) (*Limit, error) {
 type newLimitResponse struct {
 	Limit []Limit `json:"result"`
 }
+
+
+func (c *Client) DeleteLimit(limitId int64) error {
+	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/platform/limits/%d", c.Host, limitId), nil)
+
+	if err != nil {
+		return nil
+	}
+
+	_, err = c.doRequest(req, nil)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

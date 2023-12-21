@@ -32,7 +32,7 @@ type CustomServerConfiguration struct {
 	Uri      string     `json:"uri"`
 	Method   string     `json:"method"`
 	Body     string     `json:"body"`
-	CA       string     `json:"ca,omitempty"`
+	CA       *string    `json:"ca,omitempty"`
 	Headers  []Header   `json:"headers"`
 	Validate *Validator `json:"validate,omitempty"`
 }
@@ -68,18 +68,18 @@ type Webhook interface {
 	isWebhookObject()
 }
 
-type SignleWebhook struct {
+type SingleWebhook struct {
 	Id            int64         `json:"id,omitempty"`
 	Name          string        `json:"name"`
 	Triggers      []Trigger     `json:"triggers"`
 	Configuration Configuration `json:"configuration"`
 }
 
-func (sw *SignleWebhook) isWebhookObject() {
+func (sw *SingleWebhook) isWebhookObject() {
 	return
 }
 
-func (sw *SignleWebhook) UnmarshalJSON(data []byte) error {
+func (sw *SingleWebhook) UnmarshalJSON(data []byte) error {
 	var staticFieldsStruct struct {
 		Id       int64     `json:"id,omitempty"`
 		Name     string    `json:"name"`
@@ -263,7 +263,7 @@ func (c *Client) UpdateWebhook(webhookId int64, webhook Webhook) (Webhook, error
 	return webhooks[0], nil
 }
 
-func (c *Client) DeleteWebhook(webhookId int) error {
+func (c *Client) DeleteWebhook(webhookId int64) error {
 	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/platform/webhooks/%d", c.Host, webhookId), nil)
 
 	if err != nil {
@@ -281,7 +281,7 @@ func (c *Client) DeleteWebhook(webhookId int) error {
 
 func unmarshalWebhook(rawValue json.RawMessage) (Webhook, error) {
 	var err error = nil
-	var singleWebhook SignleWebhook
+	var singleWebhook SingleWebhook
 
 	if err = json.Unmarshal(rawValue, &singleWebhook); err == nil {
 		return &singleWebhook, nil
