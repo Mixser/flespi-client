@@ -239,6 +239,46 @@ func (c *Client) GetWebhook(webhookId int64) (Webhook, error) {
 	return webhooks[0], nil
 }
 
+func (c *Client) UpdateWebhook(webhookId int64, webhook Webhook) (Webhook, error) {
+	httpReqBody, err := json.Marshal(webhook)
+
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/platform/webhooks/%d", c.Host, webhookId), bytes.NewBuffer(httpReqBody))
+
+	resp, err := c.doRequest(req, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	webhooks, err := unmarshalWebhookResponse(resp)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return webhooks[0], nil
+}
+
+func (c *Client) DeleteWebhook(webhookId int) error {
+	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/platform/webhooks/%d", c.Host, webhookId), nil)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = c.doRequest(req, nil)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func unmarshalWebhook(rawValue json.RawMessage) (Webhook, error) {
 	var err error = nil
 	var singleWebhook SignleWebhook
