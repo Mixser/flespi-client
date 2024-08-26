@@ -194,7 +194,6 @@ type newLimitResponse struct {
 	Limit []Limit `json:"result"`
 }
 
-
 func (c *Client) DeleteLimit(limitId int64) error {
 	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/platform/limits/%d", c.Host, limitId), nil)
 

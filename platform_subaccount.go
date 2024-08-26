@@ -105,7 +105,6 @@ func (c *Client) UpdateSubaccount(subaccountId int64, subaccount Subaccount) (*S
 	return &subaccount, nil
 }
 
-
 func (c *Client) DeleteSubaccount(subaccountId int64) error {
 	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/platform/subaccounts/%d", c.Host, subaccountId), nil)
 
