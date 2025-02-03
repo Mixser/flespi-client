@@ -23,3 +23,5 @@ go.work
 # IDE
 .fleet
 .idea
+
+.DS_Store

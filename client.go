@@ -1,6 +1,8 @@
 package flespi
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -23,12 +25,8 @@ func NewClient(host string, token string) (*Client, error) {
 	return &c, nil
 }
 
-func (c *Client) doRequest(req *http.Request, authToken *string) ([]byte, error) {
+func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	token := c.Token
-
-	if authToken != nil {
-		token = *authToken
-	}
 
 	req.Header.Set("Authorization", fmt.Sprintf("FlespiToken %s", token))
 
@@ -49,4 +47,38 @@ func (c *Client) doRequest(req *http.Request, authToken *string) ([]byte, error)
 	}
 
 	return body, nil
+}
+
+func (c *Client) RequestAPI(method string, endpoint string, payload interface{}, response interface{}) error {
+	var body io.Reader
+
+	if payload != nil {
+		jsonData, err := json.Marshal(payload)
+		if err != nil {
+			return err
+		}
+
+		body = bytes.NewBuffer(jsonData)
+	}
+
+	req, err := http.NewRequest(method, fmt.Sprintf("%s/%s", c.Host, endpoint), body)
+
+	if err != nil {
+		return nil
+	}
+
+	resp, err := c.doRequest(req)
+
+	if err != nil {
+		return err
+	}
+
+	if response != nil {
+		err = json.Unmarshal(resp, response)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
