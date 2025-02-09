@@ -15,7 +15,7 @@ func NewSubaccount(client *flespi.Client, name string, options ...CreateSubaccou
 
 	response := subaccountsResponse{}
 
-	err := client.RequestAPI("POST", "platform/subaccount", subaccount, &response)
+	err := client.RequestAPI("POST", "platform/subaccounts", subaccount, &response)
 
 	if err != nil {
 		return nil, err
@@ -64,7 +64,6 @@ func UpdateSubaccount(client *flespi.Client, subaccount Subaccount) (*Subaccount
 
 	return &response.Subaccounts[0], nil
 }
-
 
 func DeleteSubaccount(client *flespi.Client, subaccount Subaccount) error {
 	if subaccount.Id == 0 {

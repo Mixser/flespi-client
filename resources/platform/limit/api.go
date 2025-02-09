@@ -2,6 +2,7 @@ package flespi_limit
 
 import (
 	"fmt"
+
 	"github.com/mixser/flespi-client"
 )
 
@@ -38,7 +39,7 @@ func ListLimits(c *flespi.Client) ([]Limit, error) {
 func GetLimit(c *flespi.Client, limitId int64) (*Limit, error) {
 	response := limitsResponse{}
 
-	err := c.RequestAPI("GET", fmt.Sprintf("platfrom/limits/%d", limitId), nil, &response)
+	err := c.RequestAPI("GET", fmt.Sprintf("platform/limits/%d", limitId), nil, &response)
 
 	if err != nil {
 		return nil, err
