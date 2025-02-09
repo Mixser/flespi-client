@@ -1,8 +1,9 @@
 package flespi_subaccount
 
 import (
-    "fmt"
-    "github.com/mixser/flespi-client"
+	"fmt"
+
+	"github.com/mixser/flespi-client"
 )
 
 func NewSubaccount(client *flespi.Client, name string, options ...CreateSubaccountOption) (*Subaccount, error) {
@@ -64,7 +65,16 @@ func UpdateSubaccount(client *flespi.Client, subaccount Subaccount) (*Subaccount
 	return &response.Subaccounts[0], nil
 }
 
-func DeleteSubaccount(client flespi.Client, subaccountId int64) error {
+
+func DeleteSubaccount(client *flespi.Client, subaccount Subaccount) error {
+	if subaccount.Id == 0 {
+		return fmt.Errorf("Id should be defined before delete!")
+	}
+
+	return DeleteSubaccountById(client, subaccount.Id)
+}
+
+func DeleteSubaccountById(client *flespi.Client, subaccountId int64) error {
 	err := client.RequestAPI("DELETE", fmt.Sprintf("platform/subaccounts/%d", subaccountId), nil, nil)
 
 	if err != nil {
@@ -73,4 +83,3 @@ func DeleteSubaccount(client flespi.Client, subaccountId int64) error {
 
 	return nil
 }
-
