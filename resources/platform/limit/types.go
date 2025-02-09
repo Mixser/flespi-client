@@ -71,7 +71,7 @@ type Limit struct {
 type CreateLimitOption func(*Limit)
 
 func WithDescription(description string) CreateLimitOption {
-	return func (limit *Limit) {
+	return func(limit *Limit) {
 		limit.Description = description
 	}
 }
@@ -83,15 +83,14 @@ func WithBlockingDurationLimit(duration int) CreateLimitOption {
 }
 
 func WithApiLimit(apiCall int64, apiTraffic int64) CreateLimitOption {
-	return func (limit *Limit) {
+	return func(limit *Limit) {
 		limit.ApiCall = apiCall
 		limit.ApiTraffic = apiTraffic
 	}
 }
 
-
 func WithChannelLimit(count int64, messages int64, storage int64, traffic int64, connections int64) CreateLimitOption {
-	return func (limit *Limit) {
+	return func(limit *Limit) {
 		limit.ChannelsCount = count
 		limit.ChannelMessages = messages
 		limit.ChannelStorage = storage
@@ -101,7 +100,7 @@ func WithChannelLimit(count int64, messages int64, storage int64, traffic int64,
 }
 
 func WithContainerLimit(count int64, storage int64) CreateLimitOption {
-	return func (limit *Limit) {
+	return func(limit *Limit) {
 		limit.ContainersCount = count
 		limit.ContainerStorage = storage
 	}
@@ -132,7 +131,7 @@ func WithStreamLimit(count int64, storage int64, traffic int64) CreateLimitOptio
 	}
 }
 
-func WithModelLimit(count int64) CreateLimitOption {
+func WithModemLimit(count int64) CreateLimitOption {
 	return func(limit *Limit) {
 		limit.ModemsCount = count
 	}
@@ -160,7 +159,6 @@ func WithTokenLimit(count int64) CreateLimitOption {
 	}
 }
 
-
 func WithLimitLimit(count int64) CreateLimitOption {
 	return func(limit *Limit) {
 		limit.LimitsCount = count
@@ -172,7 +170,6 @@ func WithRealmLimit(count int64) CreateLimitOption {
 		limit.RealmsCount = count
 	}
 }
-
 
 func WithCalcLimit(count int64, storage int64) CreateLimitOption {
 	return func(limit *Limit) {
