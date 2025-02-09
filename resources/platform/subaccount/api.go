@@ -7,15 +7,15 @@ import (
 )
 
 func NewSubaccount(client *flespi.Client, name string, options ...CreateSubaccountOption) (*Subaccount, error) {
-	subaccount := &Subaccount{Name: name}
+	subaccount := Subaccount{Name: name}
 
 	for _, opt := range options {
-		opt(subaccount)
+		opt(&subaccount)
 	}
 
 	response := subaccountsResponse{}
 
-	err := client.RequestAPI("POST", "platform/subaccounts", subaccount, &response)
+	err := client.RequestAPI("POST", "platform/subaccounts", []Subaccount{subaccount}, &response)
 
 	if err != nil {
 		return nil, err
