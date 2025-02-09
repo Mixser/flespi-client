@@ -6,12 +6,11 @@ type GeofenceGeometry interface {
 	GetType() string
 }
 
-
 type Geofence struct {
-	Id int64 `json:"id,omitempty"`
+	Id   int64  `json:"id,omitempty"`
 	Name string `json:"name"`
 
-	Enabled bool `json:"enabled"`
+	Enabled  bool  `json:"enabled"`
 	Priority int64 `json:"priority"`
 
 	Geometry GeofenceGeometry `json:"geometry"`
@@ -19,10 +18,10 @@ type Geofence struct {
 
 func (g *Geofence) UnmarshalJSON(data []byte) error {
 	var raw struct {
-		Id int64 `json:"id"`
+		Id   int64  `json:"id"`
 		Name string `json:"name"`
 
-		Enabled bool `json:"enabled"`
+		Enabled  bool  `json:"enabled"`
 		Priority int64 `json:"priority"`
 
 		Geometry json.RawMessage `json:"geometry"`
@@ -37,7 +36,7 @@ func (g *Geofence) UnmarshalJSON(data []byte) error {
 	g.Enabled = raw.Enabled
 	g.Priority = raw.Priority
 
-	geometry, err := unmarshalGeometry(raw.Geometry)
+	geometry, err := UnmarshalGeometry(raw.Geometry)
 
 	if err != nil {
 		return err
@@ -48,16 +47,14 @@ func (g *Geofence) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-
 type Point struct {
-	Latitude float64 `json:"lat"`
+	Latitude  float64 `json:"lat"`
 	Longitude float64 `json:"lon"`
 }
 
-
 type Circle struct {
-	Type   string `json:"type"`
-	Center Point  `json:"center"`
+	Type   string  `json:"type"`
+	Center Point   `json:"center"`
 	Radius float64 `json:"radius"`
 }
 
@@ -83,8 +80,8 @@ func (p *Polygon) GetType() string {
 }
 
 type Corridor struct {
-	Type string `json:"type"`
-	Path []Point `json:"path"`
+	Type  string  `json:"type"`
+	Path  []Point `json:"path"`
 	Width float64 `json:"width"`
 }
 
@@ -95,7 +92,6 @@ func NewCorridor(path []Point, width float64) *Corridor {
 func (p *Corridor) GetType() string {
 	return "corridor"
 }
-
 
 type geofencesResponse struct {
 	Geofences []Geofence `json:"result"`
@@ -116,7 +112,7 @@ func WithPriority(priority int64) CreateGeofenceOption {
 }
 
 func WithGeometry(geometry GeofenceGeometry) CreateGeofenceOption {
-	return func (g *Geofence) {
+	return func(g *Geofence) {
 		g.Geometry = geometry
 	}
 }

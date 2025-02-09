@@ -2,8 +2,7 @@ package flespi_geofence
 
 import "encoding/json"
 
-
-func unmarshalGeometry(rawValue json.RawMessage) (GeofenceGeometry, error) {
+func UnmarshalGeometry(rawValue json.RawMessage) (GeofenceGeometry, error) {
 	var err error = nil
 
 	var circle Circle
