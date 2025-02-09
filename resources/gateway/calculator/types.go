@@ -10,14 +10,14 @@ type Calculator struct {
 
 	Name string `json:"name"`
 
-	MessagesSource MessagesSource `json:"message_source"`
+	MessagesSource MessagesSource `json:"messages_source,omitempty"`
 
-	UpdatePeriod   int64 `json:"update_period"`
-	UpdateDelay    int64 `json:"update_delay"`
-	UpdateOnchange bool  `json:"update_onchange"`
+	UpdatePeriod   int64 `json:"update_period,omitempty"`
+	UpdateDelay    int64 `json:"update_delay,omitempty"`
+	UpdateOnchange bool  `json:"update_onchange,omitempty"`
 
-	IntervalsTTL    int64 `json:"intervals_ttl"`
-	IntervalsRotate int64 `json:"intervals_rotate"`
+	IntervalsTTL    int64 `json:"intervals_ttl,omitempty"`
+	IntervalsRotate int64 `json:"intervals_rotate,omitempty"`
 
 	Selectors []Selector `json:"selectors"`
 	Counters  []Counter  `json:"counters"`
@@ -152,12 +152,6 @@ func unmarshalMessageSource(raw json.RawMessage) (MessagesSource, error) {
 	return result, err
 }
 
-func NewCalculator(name string, options ...CreateCalculatorOption) *Calculator {
-	return &Calculator{
-		Name: name,
-	}
-}
-
 func WithDeviceMessageSource() CreateCalculatorOption {
 	return func(calculator *Calculator) {
 		calculator.MessagesSource = &DeviceSource{
@@ -172,6 +166,18 @@ func WithCalculatorMessageSource(calculatorId int64) CreateCalculatorOption {
 			Source:       "calculator",
 			CalculatorId: calculatorId,
 		}
+	}
+}
+
+func WithSelector(selector Selector) CreateCalculatorOption {
+	return func(calculator *Calculator) {
+		calculator.Selectors = append(calculator.Selectors, selector)
+	}
+}
+
+func WithCounter(counter Counter) CreateCalculatorOption {
+	return func(calculator *Calculator) {
+		calculator.Counters = append(calculator.Counters, counter)
 	}
 }
 

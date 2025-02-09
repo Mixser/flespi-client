@@ -31,6 +31,12 @@ func NewCounterExpression(name string, expression string, options ...CreateCount
 
 type CreateCounterExpressionOption func(expression *CounterExpression)
 
+func CEWithMethod(method string) CreateCounterExpressionOption {
+	return func(expression *CounterExpression) {
+		expression.Method = method
+	}
+}
+
 type CounterDataset struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
@@ -173,14 +179,14 @@ func NewCounterParameter(name string, parameter string, options ...CreateCounter
 
 type CreateCounterParameterOption func(parameter *CounterParameter)
 
-func CPWithMethod(method string) CreateCounterExpressionOption {
-	return func(expression *CounterExpression) {
+func CPWithMethod(method string) CreateCounterParameterOption {
+	return func(expression *CounterParameter) {
 		expression.Method = method
 	}
 }
 
-func CPWithValidateMessage(validateMessage string) CreateCounterExpressionOption {
-	return func(expression *CounterExpression) {
+func CPWithValidateMessage(validateMessage string) CreateCounterParameterOption {
+	return func(expression *CounterParameter) {
 		expression.ValidateMessage = validateMessage
 	}
 }

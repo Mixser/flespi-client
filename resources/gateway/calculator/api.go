@@ -6,7 +6,23 @@ import (
 	"github.com/mixser/flespi-client"
 )
 
-// TODO: add NewCalculator call
+func NewCalculator(client *flespi.Client, name string, options ...CreateCalculatorOption) (*Calculator, error) {
+	calc := Calculator{
+		Name: name,
+	}
+
+	for _, opt := range options {
+		opt(&calc)
+	}
+
+	response := calculatorsResponse{}
+
+	if err := client.RequestAPI("POST", "gw/calcs", []Calculator{calc}, &response); err != nil {
+		return nil, err
+	}
+
+	return &response.Calculators[0], nil
+}
 
 func ListCalculators(client *flespi.Client) ([]Calculator, error) {
 	response := calculatorsResponse{}

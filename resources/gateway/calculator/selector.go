@@ -8,6 +8,7 @@ import (
 )
 
 type Selector interface {
+	GetSelectorType() string
 }
 
 type SelectorExpression struct {
@@ -35,6 +36,10 @@ type SelectorExpression struct {
 	ValidateMessage string `json:"validate_message,omitempty"`
 }
 
+func (se *SelectorExpression) GetSelectorType() string {
+	return "expression"
+}
+
 func NewSelectorExpression(name string, expression string, options ...CreateSelectorExpressionOption) *SelectorExpression {
 	selectorExpression := SelectorExpression{
 		Name:       name,
@@ -51,7 +56,7 @@ func NewSelectorExpression(name string, expression string, options ...CreateSele
 
 type CreateSelectorExpressionOption func(expression *SelectorExpression)
 
-type SelectorDateOrTime struct {
+type SelectorDatetime struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
 
@@ -65,8 +70,12 @@ type SelectorDateOrTime struct {
 	ValidateMessage string `json:"validate_message,omitempty"`
 }
 
-func NewSelectorDateOrTime(name string, options ...CreateSelectorDateOrTimeOption) *SelectorDateOrTime {
-	selectorDateOrTime := SelectorDateOrTime{
+func (sd *SelectorDatetime) GetSelectorType() string {
+	return "datetime"
+}
+
+func NewSelectorDateOrTime(name string, options ...CreateSelectorDateOrTimeOption) *SelectorDatetime {
+	selectorDateOrTime := SelectorDatetime{
 		Name: name,
 		Type: "datetime",
 	}
@@ -78,7 +87,7 @@ func NewSelectorDateOrTime(name string, options ...CreateSelectorDateOrTimeOptio
 	return &selectorDateOrTime
 }
 
-type CreateSelectorDateOrTimeOption func(dateOrTime *SelectorDateOrTime)
+type CreateSelectorDateOrTimeOption func(dateOrTime *SelectorDatetime)
 
 type SelectorGeofence struct {
 	Name string `json:"name"`
@@ -101,6 +110,10 @@ type SelectorGeofence struct {
 	MergeUnknown bool `json:"merge_unknown,omitempty"`
 
 	ValidateMessage string `json:"validate_message,omitempty"`
+}
+
+func (sg *SelectorGeofence) GetSelectorType() string {
+	return "geofence"
 }
 
 func (sg *SelectorGeofence) UnmarshalJSON(data []byte) error {
@@ -172,6 +185,13 @@ func NewSelectorGeofence(name string, options ...CreateSelectorGeofenceOption) *
 
 type CreateSelectorGeofenceOption func(selector *SelectorGeofence)
 
+
+func WithGeometry(geometry flespi_geofence.GeofenceGeometry) CreateSelectorGeofenceOption {
+	return func(geofence *SelectorGeofence) {
+		geofence.Geofences = append(geofence.Geofences, geometry)
+	}
+}
+
 type SelectorCalculator struct {
 	CalculatorId int64  `json:"calculator_id"`
 	Type         string `json:"type"`
@@ -188,6 +208,10 @@ type SelectorCalculator struct {
 	MaxMessagesTimeDiff int64 `json:"max_messages_time_diff,omitempty"`
 
 	ValidateInterval string `json:"validate_interval,omitempty"`
+}
+
+func (sc *SelectorCalculator) GetSelectorType() string {
+	return "calculator"
 }
 
 func NewSelectorCalculator(calculatorId int64, options ...CreateSelectorCalculatorOption) *SelectorCalculator {
@@ -210,6 +234,10 @@ type SelectorInactive struct {
 	Type string `json:"type"`
 
 	DelayThreshold int64 `json:"delay_threshold"`
+}
+
+func (si *SelectorInactive) GetSelectorType() string {
+	return "inactive"
 }
 
 func NewSelectorInactive(name string, delayThreshold int64) *SelectorInactive {
@@ -250,11 +278,11 @@ func unmarshallSelector(raw json.RawMessage) (Selector, error) {
 
 	switch {
 	case rawSelector.Type == "expression":
-		selector := SelectorExpression{}
+		selector := &SelectorExpression{}
 		err = json.Unmarshal(raw, &selector)
 		result = selector
 	case rawSelector.Type == "datetime":
-		selector := &SelectorDateOrTime{}
+		selector := &SelectorDatetime{}
 		err = json.Unmarshal(raw, &selector)
 		result = selector
 	case rawSelector.Type == "geofence":
