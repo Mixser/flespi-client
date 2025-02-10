@@ -59,7 +59,7 @@ func newWebhook(c *flespi.Client, webhook Webhook) (Webhook, error) {
 func GetWebhook(c *flespi.Client, webhookId int64) (Webhook, error) {
 	response := webhookResponse{}
 
-	err := c.RequestAPI("GET", fmt.Sprintf("platform/webhooks/%d", webhookId), nil, &webhookResponse{})
+	err := c.RequestAPI("GET", fmt.Sprintf("platform/webhooks/%d", webhookId), nil, &response)
 
 	if err != nil {
 		return nil, err
