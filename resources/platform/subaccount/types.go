@@ -5,7 +5,7 @@ type Subaccount struct {
 	Name    string `json:"name"`
 	LimitId int64  `json:"limit_id"`
 
-	Metadata map[string]string `json:"metadata"`
+	Metadata map[string]string `json:"metadata,omitempty"`
 }
 
 type CreateSubaccountOption func(*Subaccount)
@@ -19,4 +19,3 @@ func WithLimit(limitId int64) CreateSubaccountOption {
 type subaccountsResponse struct {
 	Subaccounts []Subaccount `json:"result"`
 }
-
