@@ -56,7 +56,12 @@ func UpdateSubaccount(client *flespi.Client, subaccount Subaccount) (*Subaccount
 
 	response := subaccountsResponse{}
 
-	err := client.RequestAPI("PUT", fmt.Sprintf("platform/subaccounts/%d", subaccount.Id), subaccount, &response)
+	subaccountId := subaccount.Id
+	subaccount.Id = 0
+
+	err := client.RequestAPI("PUT", fmt.Sprintf("platform/subaccounts/%d", subaccountId), subaccount, &response)
+
+	subaccount.Id = subaccountId
 
 	if err != nil {
 		return nil, err
