@@ -8,7 +8,7 @@ import (
 func ListGeofences(c *flespi.Client) ([]Geofence, error) {
 	response := geofencesResponse{}
 
-	err := c.RequestAPI("GET", "gw/geofences/all?fields=id,geometry", nil, &response)
+	err := c.RequestAPI("GET", "gw/geofences/all?fields=id,name,enabled,priority,geometry", nil, &response)
 
 	if err != nil {
 		return nil, err
@@ -26,7 +26,7 @@ func NewGeofence(c *flespi.Client, name string, options ...CreateGeofenceOption)
 
 	response := geofencesResponse{}
 
-	err := c.RequestAPI("POST", "gw/geofences?fields=id,geometry", []Geofence{geofence}, &response)
+	err := c.RequestAPI("POST", "gw/geofences?fields=id,name,enabled,priority,geometry", []Geofence{geofence}, &response)
 
 	if err != nil {
 		return nil, err
