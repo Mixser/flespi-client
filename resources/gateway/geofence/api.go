@@ -8,7 +8,7 @@ import (
 func ListGeofences(c *flespi.Client) ([]Geofence, error) {
 	response := geofencesResponse{}
 
-	err := c.RequestAPI("GET", "gw/geofences/all?fields=id,geometry", nil , &response)
+	err := c.RequestAPI("GET", "gw/geofences/all?fields=id,geometry", nil, &response)
 
 	if err != nil {
 		return nil, err
@@ -16,7 +16,6 @@ func ListGeofences(c *flespi.Client) ([]Geofence, error) {
 
 	return response.Geofences, nil
 }
-
 
 func NewGeofence(c *flespi.Client, name string, options ...CreateGeofenceOption) (*Geofence, error) {
 	geofence := Geofence{Name: name}
@@ -35,7 +34,6 @@ func NewGeofence(c *flespi.Client, name string, options ...CreateGeofenceOption)
 
 	return &response.Geofences[0], nil
 }
-
 
 func UpdateGeofence(c *flespi.Client, geofence Geofence) (*Geofence, error) {
 	response := geofencesResponse{}
@@ -57,5 +55,5 @@ func DeleteGeofence(c *flespi.Client, geofence Geofence) error {
 }
 
 func DeleteGeofenceById(c *flespi.Client, geofenceId int64) error {
-	return c.RequestAPI("DELETE", fmt.Sprintf("gw/geofences/%d", geofenceId), nil ,nil)
+	return c.RequestAPI("DELETE", fmt.Sprintf("gw/geofences/%d", geofenceId), nil, nil)
 }

@@ -71,7 +71,7 @@ func TestRetryConfig_CalculateBackoff(t *testing.T) {
 		{2, 4 * time.Second},
 		{3, 8 * time.Second},
 		{4, 16 * time.Second},
-		{5, 30 * time.Second}, // capped at MaxBackoff
+		{5, 30 * time.Second},  // capped at MaxBackoff
 		{10, 30 * time.Second}, // still capped
 	}
 
@@ -103,10 +103,10 @@ func TestClient_RetryOnTransientErrors(t *testing.T) {
 	defer server.Close()
 
 	retryConfig := &RetryConfig{
-		MaxRetries:         3,
-		InitialBackoff:     10 * time.Millisecond,
-		MaxBackoff:         100 * time.Millisecond,
-		BackoffMultiplier:  2.0,
+		MaxRetries:        3,
+		InitialBackoff:    10 * time.Millisecond,
+		MaxBackoff:        100 * time.Millisecond,
+		BackoffMultiplier: 2.0,
 		RetryableStatusCodes: map[int]bool{
 			http.StatusServiceUnavailable: true,
 		},
@@ -163,10 +163,10 @@ func TestClient_RetryWithContextCancellation(t *testing.T) {
 	defer server.Close()
 
 	retryConfig := &RetryConfig{
-		MaxRetries:         5,
-		InitialBackoff:     100 * time.Millisecond,
-		MaxBackoff:         1 * time.Second,
-		BackoffMultiplier:  2.0,
+		MaxRetries:        5,
+		InitialBackoff:    100 * time.Millisecond,
+		MaxBackoff:        1 * time.Second,
+		BackoffMultiplier: 2.0,
 		RetryableStatusCodes: map[int]bool{
 			http.StatusServiceUnavailable: true,
 		},

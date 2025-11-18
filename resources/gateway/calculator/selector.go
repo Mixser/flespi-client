@@ -185,7 +185,6 @@ func NewSelectorGeofence(name string, options ...CreateSelectorGeofenceOption) *
 
 type CreateSelectorGeofenceOption func(selector *SelectorGeofence)
 
-
 func WithGeometry(geometry flespi_geofence.GeofenceGeometry) CreateSelectorGeofenceOption {
 	return func(geofence *SelectorGeofence) {
 		geofence.Geofences = append(geofence.Geofences, geometry)

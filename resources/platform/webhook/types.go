@@ -59,14 +59,10 @@ type FlespiConfiguration struct {
 }
 
 func (c CustomServerConfiguration) isConfigurationInstance() {
-	return
 }
-
 
 func (c FlespiConfiguration) isConfigurationInstance() {
-	return
 }
-
 
 type TriggerFilter struct {
 	CID     int64  `json:"cid"`
@@ -79,7 +75,6 @@ type Trigger struct {
 }
 
 type Webhook interface {
-
 	GetId() int64
 	isWebhookObject()
 }
@@ -97,9 +92,9 @@ func (sw *SingleWebhook) GetId() int64 {
 
 func (sw *SingleWebhook) UnmarshalJSON(data []byte) error {
 	var raw struct {
-		Id       int64     `json:"id,omitempty"`
-		Name     string    `json:"name"`
-		Triggers []Trigger `json:"triggers"`
+		Id            int64           `json:"id,omitempty"`
+		Name          string          `json:"name"`
+		Triggers      []Trigger       `json:"triggers"`
 		Configuration json.RawMessage `json:"configuration"`
 	}
 
@@ -122,10 +117,7 @@ func (sw *SingleWebhook) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-
-
 func (sw *SingleWebhook) isWebhookObject() {
-	return
 }
 
 type ChainedWebhook struct {
@@ -135,15 +127,15 @@ type ChainedWebhook struct {
 	Configuration []Configuration `json:"configuration"`
 }
 
-func (cw *ChainedWebhook) GetId() int64{
+func (cw *ChainedWebhook) GetId() int64 {
 	return cw.Id
 }
 
 func (cw *ChainedWebhook) UnmarshalJSON(data []byte) error {
 	var raw struct {
-		Id       int64     `json:"id,omitempty"`
-		Name     string    `json:"name"`
-		Triggers []Trigger `json:"triggers"`
+		Id            int64             `json:"id,omitempty"`
+		Name          string            `json:"name"`
+		Triggers      []Trigger         `json:"triggers"`
 		Configuration []json.RawMessage `json:"configuration"`
 	}
 
@@ -167,11 +159,8 @@ func (cw *ChainedWebhook) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-
 func (cw *ChainedWebhook) isWebhookObject() {
-	return
 }
-
 
 type CreateSingleWebhookOption func(*SingleWebhook)
 
@@ -217,9 +206,7 @@ func CWWithConfigurations(configurations []Configuration) CreateChainedWebhookOp
 	}
 }
 
-
 type CreateChainedWebhookOption func(*ChainedWebhook)
-
 
 type webhookResponse struct {
 	RawValue []json.RawMessage `json:"result"`

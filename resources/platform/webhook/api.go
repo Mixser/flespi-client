@@ -37,7 +37,6 @@ func NewChainedWebhook(c *flespi.Client, name string, options ...CreateChainedWe
 	return result.(*ChainedWebhook), nil
 }
 
-
 func newWebhook(c *flespi.Client, webhook Webhook) (Webhook, error) {
 	response := webhookResponse{}
 

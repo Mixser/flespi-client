@@ -1,17 +1,17 @@
 package flespi_device
 
 import (
-    "fmt"
-    "github.com/mixser/flespi-client"
+	"fmt"
+	"github.com/mixser/flespi-client"
 )
 
 func NewDevice(c *flespi.Client, name string, enabled bool, deviceTypeId int64, options ...CreateDeviceOption) (*Device, error) {
 	device := Device{
-		Name: name,
-		Enabled: enabled,
-		DeviceTypeId: deviceTypeId,
+		Name:          name,
+		Enabled:       enabled,
+		DeviceTypeId:  deviceTypeId,
 		Configuration: make(map[string]string),
-    }
+	}
 
 	for _, opt := range options {
 		opt(&device)
@@ -44,7 +44,6 @@ func GetDevice(c *flespi.Client, deviceId int64) (*Device, error) {
 	response := devicesResponse{}
 
 	err := c.RequestAPI("GET", fmt.Sprintf("gw/devices/%d", deviceId), nil, &response)
-
 
 	if err != nil {
 		return nil, err

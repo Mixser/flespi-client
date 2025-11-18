@@ -71,6 +71,7 @@ func (c *Calculator) UnmarshalJSON(data []byte) error {
 	c.ValidateMessage = raw.ValidateMessage
 	c.Timezone = raw.Timezone
 
+	var err error
 	messagesSource, err := unmarshalMessageSource(raw.MessagesSource)
 
 	if err != nil {

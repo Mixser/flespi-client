@@ -67,8 +67,7 @@ func UpdateLimit(c *flespi.Client, limit Limit) (*Limit, error) {
 	return &response.Limits[0], nil
 }
 
-
-func DeleteLimit(c *flespi.Client, limit Limit) (error) {
+func DeleteLimit(c *flespi.Client, limit Limit) error {
 	if limit.Id == 0 {
 		return fmt.Errorf("ID must be provided")
 	}
@@ -76,7 +75,7 @@ func DeleteLimit(c *flespi.Client, limit Limit) (error) {
 	return DeleteLimitById(c, limit.Id)
 }
 
-func DeleteLimitById(c *flespi.Client, limitId int64) (error) {
+func DeleteLimitById(c *flespi.Client, limitId int64) error {
 	err := c.RequestAPI("DELETE", fmt.Sprintf("platform/limits/%d", limitId), nil, nil)
 
 	if err != nil {

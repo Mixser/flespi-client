@@ -62,7 +62,7 @@ func UpdateCDN(client *flespi.Client, cdn CDN) (*CDN, error) {
 	return &response.CDNS[0], nil
 }
 
-func DeleteCDN(client *flespi.Client, cdn CDN) (error) {
+func DeleteCDN(client *flespi.Client, cdn CDN) error {
 	if cdn.Id == 0 {
 		return fmt.Errorf("ID must be provided")
 	}

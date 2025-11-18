@@ -30,10 +30,10 @@ type RetryConfig struct {
 // DefaultRetryConfig returns a retry configuration with sensible defaults
 func DefaultRetryConfig() *RetryConfig {
 	return &RetryConfig{
-		MaxRetries:         3,
-		InitialBackoff:     1 * time.Second,
-		MaxBackoff:         30 * time.Second,
-		BackoffMultiplier:  2.0,
+		MaxRetries:        3,
+		InitialBackoff:    1 * time.Second,
+		MaxBackoff:        30 * time.Second,
+		BackoffMultiplier: 2.0,
 		RetryableStatusCodes: map[int]bool{
 			http.StatusTooManyRequests:     true, // 429
 			http.StatusInternalServerError: true, // 500

@@ -487,102 +487,153 @@ func unmarshalCounter(raw json.RawMessage) (Counter, error) {
 		return nil, err
 	}
 
-	var result Counter
-	var err error
-
 	switch counterType.Type {
 	case "expression":
-		var counterExpression CounterExpression
-
-		if err = json.Unmarshal(raw, &counterExpression); err == nil {
-			result = &counterExpression
-		}
+		return unmarshalCounterExpression(raw)
 	case "dataset":
-		var counterDataset CounterDataset
-
-		if err = json.Unmarshal(raw, &counterDataset); err == nil {
-			result = &counterDataset
-		}
+		return unmarshalCounterDataset(raw)
 	case "route":
-		var counterRoute CounterRoute
-
-		if err = json.Unmarshal(raw, &counterRoute); err == nil {
-			result = &counterRoute
-		}
+		return unmarshalCounterRoute(raw)
 	case "datetime":
-		var counterDatetime CounterDatetime
-
-		if err = json.Unmarshal(raw, &counterDatetime); err == nil {
-			result = &counterDatetime
-		}
+		return unmarshalCounterDatetime(raw)
 	case "parameter":
-		var counterParameter CounterParameter
-
-		if err = json.Unmarshal(raw, &counterParameter); err == nil {
-			result = &counterParameter
-		}
+		return unmarshalCounterParameter(raw)
 	case "message":
-		var counterMessage CounterMessage
-
-		if err = json.Unmarshal(raw, &counterMessage); err == nil {
-			result = &counterMessage
-		}
+		return unmarshalCounterMessage(raw)
 	case "interval":
-		var counterInterval CounterInterval
-
-		if err = json.Unmarshal(raw, &counterInterval); err == nil {
-			result = &counterInterval
-		}
+		return unmarshalCounterInterval(raw)
 	case "active":
-		var counterActive CounterActive
-
-		if err = json.Unmarshal(raw, &counterActive); err == nil {
-			result = &counterActive
-		}
+		return unmarshalCounterActive(raw)
 	case "geofence":
-		var counterGeofence CounterGeofence
-
-		if err = json.Unmarshal(raw, &counterGeofence); err == nil {
-			result = &counterGeofence
-		}
+		return unmarshalCounterGeofence(raw)
 	case "variable":
-		var counterVariable CounterVariable
-
-		if err = json.Unmarshal(raw, &counterVariable); err == nil {
-			result = &counterVariable
-		}
+		return unmarshalCounterVariable(raw)
 	case "specified":
-		var specified struct {
-			Name  string      `json:"name"`
-			Value interface{} `json:"value"`
-			Type  string      `json:"type"`
-		}
-
-		if err = json.Unmarshal(raw, &specified); err == nil {
-			switch value := specified.Value.(type) {
-			case string:
-				result = NewCounterSpecifiedString(specified.Name, value)
-			case float64:
-				result = NewCounterSpecifiedNumber(specified.Name, value)
-			case bool:
-				result = NewCounterSpecifiedBoolean(specified.Name, value)
-			}
-		}
+		return unmarshalCounterSpecified(raw)
 	case "calculator":
-		var counterCalculator CounterCalculator
-
-		if err = json.Unmarshal(raw, &counterCalculator); err == nil {
-			result = &counterCalculator
-		}
+		return unmarshalCounterCalculator(raw)
 	case "accumulator":
-		var counterAccumulator CounterAccumulator
-
-		if err = json.Unmarshal(raw, &counterAccumulator); err == nil {
-			result = &counterAccumulator
-		}
+		return unmarshalCounterAccumulator(raw)
 	default:
-		err = fmt.Errorf("unknown counter type: %s", counterType.Type)
+		return nil, fmt.Errorf("unknown counter type: %s", counterType.Type)
+	}
+}
+
+func unmarshalCounterExpression(raw json.RawMessage) (Counter, error) {
+	var counter CounterExpression
+	if err := json.Unmarshal(raw, &counter); err != nil {
+		return nil, err
+	}
+	return &counter, nil
+}
+
+func unmarshalCounterDataset(raw json.RawMessage) (Counter, error) {
+	var counter CounterDataset
+	if err := json.Unmarshal(raw, &counter); err != nil {
+		return nil, err
+	}
+	return &counter, nil
+}
+
+func unmarshalCounterRoute(raw json.RawMessage) (Counter, error) {
+	var counter CounterRoute
+	if err := json.Unmarshal(raw, &counter); err != nil {
+		return nil, err
+	}
+	return &counter, nil
+}
+
+func unmarshalCounterDatetime(raw json.RawMessage) (Counter, error) {
+	var counter CounterDatetime
+	if err := json.Unmarshal(raw, &counter); err != nil {
+		return nil, err
+	}
+	return &counter, nil
+}
+
+func unmarshalCounterParameter(raw json.RawMessage) (Counter, error) {
+	var counter CounterParameter
+	if err := json.Unmarshal(raw, &counter); err != nil {
+		return nil, err
+	}
+	return &counter, nil
+}
+
+func unmarshalCounterMessage(raw json.RawMessage) (Counter, error) {
+	var counter CounterMessage
+	if err := json.Unmarshal(raw, &counter); err != nil {
+		return nil, err
+	}
+	return &counter, nil
+}
+
+func unmarshalCounterInterval(raw json.RawMessage) (Counter, error) {
+	var counter CounterInterval
+	if err := json.Unmarshal(raw, &counter); err != nil {
+		return nil, err
+	}
+	return &counter, nil
+}
+
+func unmarshalCounterActive(raw json.RawMessage) (Counter, error) {
+	var counter CounterActive
+	if err := json.Unmarshal(raw, &counter); err != nil {
+		return nil, err
+	}
+	return &counter, nil
+}
+
+func unmarshalCounterGeofence(raw json.RawMessage) (Counter, error) {
+	var counter CounterGeofence
+	if err := json.Unmarshal(raw, &counter); err != nil {
+		return nil, err
+	}
+	return &counter, nil
+}
+
+func unmarshalCounterVariable(raw json.RawMessage) (Counter, error) {
+	var counter CounterVariable
+	if err := json.Unmarshal(raw, &counter); err != nil {
+		return nil, err
+	}
+	return &counter, nil
+}
+
+func unmarshalCounterSpecified(raw json.RawMessage) (Counter, error) {
+	var specified struct {
+		Name  string      `json:"name"`
+		Value interface{} `json:"value"`
+		Type  string      `json:"type"`
 	}
 
-	return result, err
+	if err := json.Unmarshal(raw, &specified); err != nil {
+		return nil, err
+	}
+
+	switch value := specified.Value.(type) {
+	case string:
+		return NewCounterSpecifiedString(specified.Name, value), nil
+	case float64:
+		return NewCounterSpecifiedNumber(specified.Name, value), nil
+	case bool:
+		return NewCounterSpecifiedBoolean(specified.Name, value), nil
+	default:
+		return nil, fmt.Errorf("unsupported specified counter value type: %T", value)
+	}
+}
+
+func unmarshalCounterCalculator(raw json.RawMessage) (Counter, error) {
+	var counter CounterCalculator
+	if err := json.Unmarshal(raw, &counter); err != nil {
+		return nil, err
+	}
+	return &counter, nil
+}
+
+func unmarshalCounterAccumulator(raw json.RawMessage) (Counter, error) {
+	var counter CounterAccumulator
+	if err := json.Unmarshal(raw, &counter); err != nil {
+		return nil, err
+	}
+	return &counter, nil
 }

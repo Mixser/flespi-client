@@ -46,4 +46,3 @@ func WithMedia(ttl int64, rotate int64) CreateDeviceOption {
 type devicesResponse struct {
 	Devices []Device `json:"result"`
 }
-

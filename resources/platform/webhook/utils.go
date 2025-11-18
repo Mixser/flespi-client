@@ -3,7 +3,7 @@ package flespi_webhook
 import "encoding/json"
 
 func unmarshalWebhookResponse(response webhookResponse) ([]Webhook, error) {
-	var result[] Webhook
+	var result []Webhook
 
 	for _, rawValue := range response.RawValue {
 		webhook, err := unmarshalWebhook(rawValue)
@@ -17,7 +17,6 @@ func unmarshalWebhookResponse(response webhookResponse) ([]Webhook, error) {
 
 	return result, nil
 }
-
 
 func unmarshalWebhook(rawValue json.RawMessage) (Webhook, error) {
 	var err error = nil
@@ -34,7 +33,6 @@ func unmarshalWebhook(rawValue json.RawMessage) (Webhook, error) {
 
 	return nil, err
 }
-
 
 func unmarshalConfiguration(rawValue json.RawMessage) (Configuration, error) {
 	var configurationType struct {

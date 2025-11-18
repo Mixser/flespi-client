@@ -20,10 +20,8 @@ func NewToken(c *flespi.Client, info string, options ...CreateTokenOption) (*Tok
 		return nil, err
 	}
 
-
 	return &response.Tokens[0], nil
 }
-
 
 func ListTokens(c *flespi.Client) ([]Token, error) {
 	response := tokensResponse{}
@@ -53,7 +51,7 @@ func UpdateToken(c *flespi.Client, token Token) (*Token, error) {
 	response := tokensResponse{}
 
 	tokenId := token.Id
-	
+
 	token.Id = 0
 	token.Key = ""
 

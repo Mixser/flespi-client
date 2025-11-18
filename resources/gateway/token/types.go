@@ -1,7 +1,7 @@
 package flespi_token
 
 type Token struct {
-	Id int64 `json:"id,omitempty"`
+	Id  int64  `json:"id,omitempty"`
 	Key string `json:"key,omitempty"`
 
 	Info string `json:"info"`
@@ -9,14 +9,12 @@ type Token struct {
 	Enabled bool `json:"enabled"`
 
 	Expire int64 `json:"expire"`
-	TTL int64 `json:"ttl"`
+	TTL    int64 `json:"ttl"`
 
 	Metadata map[string]string `json:"metadata,omitempty"`
 }
 
-
 type CreateTokenOption func(*Token)
-
 
 func WithStatus(enabled bool) CreateTokenOption {
 	return func(token *Token) {
@@ -35,7 +33,6 @@ func WithTTL(ttl int64) CreateTokenOption {
 		token.TTL = ttl
 	}
 }
-
 
 type tokensResponse struct {
 	Tokens []Token `json:"result"`
