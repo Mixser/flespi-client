@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-11-18
+
 ### Added
 - Initial release of Flespi Go Client
 - Full CRUD operations for Flespi resources:
@@ -59,5 +61,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial development release.
 
-[Unreleased]: https://github.com/mixser/flespi-client/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/mixser/flespi-client/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/mixser/flespi-client/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/mixser/flespi-client/releases/tag/v0.1.0
