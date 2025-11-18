@@ -19,19 +19,18 @@ func unmarshalWebhookResponse(response webhookResponse) ([]Webhook, error) {
 }
 
 func unmarshalWebhook(rawValue json.RawMessage) (Webhook, error) {
-	var err error = nil
 	var singleWebhook SingleWebhook
 
-	if err = json.Unmarshal(rawValue, &singleWebhook); err == nil {
+	if err := json.Unmarshal(rawValue, &singleWebhook); err == nil {
 		return &singleWebhook, nil
 	}
 
 	var chainedWebhook ChainedWebhook
-	if err = json.Unmarshal(rawValue, &chainedWebhook); err == nil {
+	if err := json.Unmarshal(rawValue, &chainedWebhook); err == nil {
 		return &chainedWebhook, nil
 	}
 
-	return nil, err
+	return nil, json.Unmarshal(rawValue, &chainedWebhook)
 }
 
 func unmarshalConfiguration(rawValue json.RawMessage) (Configuration, error) {

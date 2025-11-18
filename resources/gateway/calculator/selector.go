@@ -272,8 +272,8 @@ func unmarshallSelector(raw json.RawMessage) (Selector, error) {
 		return nil, err
 	}
 
-	var result Selector = nil
-	var err error = nil
+	var result Selector
+	var err error
 
 	switch {
 	case rawSelector.Type == "expression":
