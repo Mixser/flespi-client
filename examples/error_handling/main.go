@@ -26,7 +26,7 @@ func main() {
 			log.Printf("Unexpected error: %v\n", err)
 		}
 	} else {
-		fmt.Printf("Found webhook: %s\n", hook.GetId())
+		fmt.Printf("Found webhook: %d\n", hook.GetId())
 	}
 
 	// Example 2: Handle detailed API errors

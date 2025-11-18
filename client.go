@@ -29,9 +29,11 @@ import (
 
 // Client represents a Flespi API client
 type Client struct {
-	Host       string
-	Token      string
-	HTTPClient *http.Client
+	Host        string
+	Token       string
+	HTTPClient  *http.Client
+	RetryConfig *RetryConfig
+	Logger      Logger
 }
 
 // ClientOption is a function that configures a Client
@@ -109,11 +111,14 @@ func (c *Client) RequestAPI(method string, endpoint string, payload interface{},
 
 // RequestAPIWithContext makes an API request with context support
 func (c *Client) RequestAPIWithContext(ctx context.Context, method string, endpoint string, payload interface{}, response interface{}) error {
+	c.logRequest(method, endpoint, payload)
+
 	var body io.Reader
 
 	if payload != nil {
 		jsonData, err := json.Marshal(payload)
 		if err != nil {
+			c.logError("Failed to marshal payload: %v", err)
 			return err
 		}
 		body = bytes.NewBuffer(jsonData)
@@ -121,17 +126,28 @@ func (c *Client) RequestAPIWithContext(ctx context.Context, method string, endpo
 
 	req, err := http.NewRequestWithContext(ctx, method, fmt.Sprintf("%s/%s", c.Host, endpoint), body)
 	if err != nil {
+		c.logError("Failed to create request: %v", err)
 		return err
 	}
 
-	resp, err := c.doRequest(req, method, endpoint)
+	var resp []byte
+	if c.RetryConfig != nil && c.RetryConfig.MaxRetries > 0 {
+		resp, err = c.doRequestWithRetry(ctx, req, method, endpoint)
+	} else {
+		resp, err = c.doRequest(req, method, endpoint)
+	}
+
 	if err != nil {
+		c.logResponse(method, endpoint, 0, err)
 		return err
 	}
+
+	c.logResponse(method, endpoint, 200, nil)
 
 	if response != nil {
 		err = json.Unmarshal(resp, response)
 		if err != nil {
+			c.logError("Failed to unmarshal response: %v", err)
 			return err
 		}
 	}
