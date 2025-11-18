@@ -5,7 +5,7 @@ import (
 	"github.com/mixser/flespi-client"
 )
 
-func NewSignleWebhook(c *flespi.Client, name string, options ...CreateSingleWebhookOption) (*SingleWebhook, error) {
+func NewSingleWebhook(c *flespi.Client, name string, options ...CreateSingleWebhookOption) (*SingleWebhook, error) {
 	webhook := SingleWebhook{Name: name}
 
 	for _, opt := range options {
@@ -21,7 +21,7 @@ func NewSignleWebhook(c *flespi.Client, name string, options ...CreateSingleWebh
 	return result.(*SingleWebhook), nil
 }
 
-func NewChainedWebhook(c *flespi.Client, name string, options ...CreateChaniedWebhookOption) (*ChainedWebhook, error) {
+func NewChainedWebhook(c *flespi.Client, name string, options ...CreateChainedWebhookOption) (*ChainedWebhook, error) {
 	webhook := ChainedWebhook{Name: name}
 
 	for _, opt := range options {

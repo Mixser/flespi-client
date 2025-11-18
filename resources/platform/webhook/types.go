@@ -176,32 +176,32 @@ func SWWithConfiguration(cfg Configuration) CreateSingleWebhookOption {
 	}
 }
 
-func CWWithTrigger(trigger Trigger) CreateChaniedWebhookOption {
+func CWWithTrigger(trigger Trigger) CreateChainedWebhookOption {
 	return func(webhook *ChainedWebhook) {
 		webhook.Triggers = append(webhook.Triggers, trigger)
 	}
 }
 
-func CWWithTriggers(triggers []Trigger) CreateChaniedWebhookOption {
+func CWWithTriggers(triggers []Trigger) CreateChainedWebhookOption {
 	return func(webhook *ChainedWebhook) {
 		webhook.Triggers = triggers
 	}
 }
 
-func CWWithConfiguration(cfg Configuration) CreateChaniedWebhookOption {
+func CWWithConfiguration(cfg Configuration) CreateChainedWebhookOption {
 	return func(webhook *ChainedWebhook) {
 		webhook.Configuration = append(webhook.Configuration, cfg)
 	}
 }
 
-func CWWithConfigurations(configurations []Configuration) CreateChaniedWebhookOption {
+func CWWithConfigurations(configurations []Configuration) CreateChainedWebhookOption {
 	return func(webhook *ChainedWebhook) {
 		webhook.Configuration = configurations
 	}
 }
 
 
-type CreateChaniedWebhookOption func(*ChainedWebhook)
+type CreateChainedWebhookOption func(*ChainedWebhook)
 
 
 type webhookResponse struct {

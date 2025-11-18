@@ -35,6 +35,7 @@ func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 
@@ -64,7 +65,7 @@ func (c *Client) RequestAPI(method string, endpoint string, payload interface{},
 	req, err := http.NewRequest(method, fmt.Sprintf("%s/%s", c.Host, endpoint), body)
 
 	if err != nil {
-		return nil
+		return err
 	}
 
 	resp, err := c.doRequest(req)
