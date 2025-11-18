@@ -1,0 +1,43 @@
+linters:
+  enable:
+    - gofmt
+    - govet
+    - errcheck
+    - staticcheck
+    - unused
+    - gosimple
+    - ineffassign
+    - typecheck
+    - exportloopref
+    - gocyclo
+    - misspell
+    - revive
+    - gosec
+    - unconvert
+
+linters-settings:
+  gocyclo:
+    min-complexity: 15
+
+  revive:
+    rules:
+      - name: exported
+        severity: warning
+        disabled: false
+
+  gosec:
+    excludes:
+      - G402 # TLS MinVersion
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck
+        - gosec
+
+run:
+  timeout: 5m
+  go: '1.22'
+  skip-dirs:
+    - examples
