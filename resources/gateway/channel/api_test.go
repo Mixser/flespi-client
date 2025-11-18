@@ -17,11 +17,13 @@ func TestNewChannelWithProtocolName(t *testing.T) {
 			t.Errorf("Expected path /gw/channels, got %s", r.URL.Path)
 		}
 
+		// Note: protocol_name can be used for creation but is read-only for updates
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{
 			"result": [{
 				"id": 123,
 				"name": "test-channel",
+				"protocol_id": 5,
 				"protocol_name": "http",
 				"enabled": true,
 				"configuration": {}

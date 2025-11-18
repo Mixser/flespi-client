@@ -77,6 +77,8 @@ func UpdateChannel(c *flespi.Client, channel Channel) (*Channel, error) {
 
 	channelId := channel.Id
 	channel.Id = 0
+	// ProtocolName is read-only for updates, clear it before sending
+	channel.ProtocolName = ""
 
 	err := c.RequestAPI("PUT", fmt.Sprintf("gw/channels/%d", channelId), channel, &response)
 
