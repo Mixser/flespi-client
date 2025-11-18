@@ -23,5 +23,6 @@ go.work
 # IDE
 .fleet
 .idea
+.claude
 
 .DS_Store
