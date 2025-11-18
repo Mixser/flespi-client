@@ -1,3 +1,20 @@
+// Package flespi provides a Go client for the Flespi telematic platform API.
+//
+// The client supports all major Flespi resources including webhooks, streams,
+// channels, devices, calculators, and more. It provides context support for
+// request cancellation, structured error handling, and configurable timeouts.
+//
+// Example usage:
+//
+//	client, err := flespi.NewClient("https://flespi.io", "your-token")
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//
+//	stream, err := flespi_stream.NewStream(client, "my-stream", 1)
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
 package flespi
 
 import (
@@ -34,7 +51,20 @@ func WithTimeout(timeout time.Duration) ClientOption {
 	}
 }
 
-// NewClient creates a new Flespi API client
+// NewClient creates a new Flespi API client with the specified host and token.
+//
+// The host parameter should be the base URL of the Flespi API (e.g., "https://flespi.io").
+// The token parameter should be a valid Flespi authentication token.
+//
+// Optional configuration can be provided using ClientOption functions:
+//   - WithTimeout(duration): Set a custom HTTP client timeout
+//   - WithHTTPClient(client): Use a custom HTTP client
+//
+// Example:
+//
+//	client, err := flespi.NewClient("https://flespi.io", "your-token",
+//	    flespi.WithTimeout(30 * time.Second),
+//	)
 func NewClient(host string, token string, options ...ClientOption) (*Client, error) {
 	c := &Client{
 		Host:       host,

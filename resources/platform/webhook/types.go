@@ -1,11 +1,28 @@
+// Package flespi_webhook provides types and functions for working with Flespi webhooks.
+//
+// Flespi webhooks allow you to configure HTTP endpoints to receive notifications
+// when specific events occur. The package supports both single and chained webhooks.
+//
+// Example:
+//
+//	webhook, err := flespi_webhook.NewSingleWebhook(client, "my-webhook",
+//	    flespi_webhook.SWWithConfiguration(flespi_webhook.CustomServerConfiguration{
+//	        Type:   "custom-server",
+//	        Uri:    "https://example.com/webhook",
+//	        Method: "POST",
+//	        Body:   `{"event": "{{event}}"}`,
+//	        Headers: []flespi_webhook.Header{},
+//	    }),
+//	)
 package flespi_webhook
 
 import "encoding/json"
 
+// Webhook validator action constants
 const (
-	ActionBreak = "break"
-	ActionSkip  = "skip"
-	ActionRetry = "retry"
+	ActionBreak = "break" // Stop processing on validation failure
+	ActionSkip  = "skip"  // Skip this webhook on validation failure
+	ActionRetry = "retry" // Retry on validation failure
 )
 
 type Header struct {
