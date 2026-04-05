@@ -137,12 +137,12 @@ func unmarshalMessageSource(raw json.RawMessage) (MessagesSource, error) {
 	var result MessagesSource
 	var err error
 
-	switch {
-	case source.Source == "device":
+	switch source.Source {
+	case "device":
 		result = &DeviceSource{
 			Source: "device",
 		}
-	case source.Source == "calculator":
+	case "calculator":
 		result = &CalculatorSource{
 			Source: "calculator",
 		}

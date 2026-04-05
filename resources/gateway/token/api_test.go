@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	flespi "github.com/mixser/flespi-client"
+	"github.com/mixser/flespi-client/internal/testhelper"
 )
 
 func TestNewToken(t *testing.T) {
@@ -27,7 +27,7 @@ func TestNewToken(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	token, err := NewToken(client, "test-token")
 
@@ -60,7 +60,7 @@ func TestGetToken(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	token, err := GetToken(client, 789)
 	if err != nil {
@@ -94,7 +94,7 @@ func TestListTokens(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	tokens, err := ListTokens(client)
 	if err != nil {
@@ -116,7 +116,7 @@ func TestDeleteToken(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	err := DeleteTokenById(client, 789)
 	if err != nil {

@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	flespi "github.com/mixser/flespi-client"
+	"github.com/mixser/flespi-client/internal/testhelper"
 )
 
 func TestNewSubaccount(t *testing.T) {
@@ -27,7 +27,7 @@ func TestNewSubaccount(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	subaccount, err := NewSubaccount(client, "test-subaccount")
 
@@ -60,7 +60,7 @@ func TestGetSubaccount(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	subaccount, err := GetSubaccount(client, 789)
 	if err != nil {
@@ -94,7 +94,7 @@ func TestListSubaccounts(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	subaccounts, err := ListSubaccounts(client)
 	if err != nil {
@@ -116,7 +116,7 @@ func TestDeleteSubaccount(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	err := DeleteSubaccountById(client, 789)
 	if err != nil {

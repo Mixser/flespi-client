@@ -5,7 +5,7 @@ import (
 	"log"
 
 	flespi "github.com/mixser/flespi-client"
-	"github.com/mixser/flespi-client/resources/gateway/stream"
+	flespi_stream "github.com/mixser/flespi-client/resources/gateway/stream"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 	}
 
 	// Create a new stream
-	stream, err := flespi_stream.NewStream(client, "example-stream", 1,
+	stream, err := client.Streams.Create("example-stream", 1,
 		flespi_stream.WithStatus(true),
 		flespi_stream.WithQueueTTL(86400),
 	)
@@ -27,16 +27,16 @@ func main() {
 	fmt.Printf("Created stream: %s (ID: %d)\n", stream.Name, stream.Id)
 
 	// List all streams
-	streams, err := flespi_stream.ListStreams(client)
+	all, err := client.Streams.List()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Total streams: %d\n", len(streams))
+	fmt.Printf("Total streams: %d\n", len(all))
 
 	// Update the stream
 	stream.Enabled = false
-	updated, err := flespi_stream.UpdateStream(client, *stream)
+	updated, err := client.Streams.Update(*stream)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,7 +44,7 @@ func main() {
 	fmt.Printf("Updated stream enabled status: %v\n", updated.Enabled)
 
 	// Delete the stream
-	err = flespi_stream.DeleteStream(client, *stream)
+	err = client.Streams.Delete(*stream)
 	if err != nil {
 		log.Fatal(err)
 	}

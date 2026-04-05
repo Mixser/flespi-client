@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	flespi "github.com/mixser/flespi-client"
+	"github.com/mixser/flespi-client/internal/testhelper"
 )
 
 func TestNewStream(t *testing.T) {
@@ -30,7 +30,7 @@ func TestNewStream(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	stream, err := NewStream(client, "test-stream", 1,
 		WithStatus(true),
@@ -71,7 +71,7 @@ func TestGetStream(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	stream, err := GetStream(client, 789)
 	if err != nil {
@@ -111,7 +111,7 @@ func TestListStreams(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	streams, err := ListStreams(client)
 	if err != nil {
@@ -142,7 +142,7 @@ func TestUpdateStream(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	stream := Stream{
 		Id:            789,
@@ -176,7 +176,7 @@ func TestDeleteStream(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	err := DeleteStreamById(client, 789)
 	if err != nil {
@@ -185,7 +185,7 @@ func TestDeleteStream(t *testing.T) {
 }
 
 func TestUpdateStream_MissingID(t *testing.T) {
-	client, _ := flespi.NewClient("https://flespi.io", "test-token")
+	client := testhelper.New("https://flespi.io")
 
 	stream := Stream{
 		Name:          "stream-without-id",

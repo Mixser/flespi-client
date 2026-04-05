@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	flespi "github.com/mixser/flespi-client"
+	"github.com/mixser/flespi-client/internal/testhelper"
 )
 
 func TestNewCDN(t *testing.T) {
@@ -28,7 +28,7 @@ func TestNewCDN(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	cdn, err := NewCDN(client, "test-cdn")
 
@@ -62,7 +62,7 @@ func TestGetCDN(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	cdn, err := GetCDN(client, 789)
 	if err != nil {
@@ -98,7 +98,7 @@ func TestListCDNs(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	cdns, err := ListCDNs(client)
 	if err != nil {
@@ -120,7 +120,7 @@ func TestDeleteCDN(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	err := DeleteCDNById(client, 789)
 	if err != nil {

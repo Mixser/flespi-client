@@ -2,10 +2,10 @@ package flespi_webhook
 
 import (
 	"fmt"
-	"github.com/mixser/flespi-client"
+	"github.com/mixser/flespi-client/internal/flespiapi"
 )
 
-func NewSingleWebhook(c *flespi.Client, name string, options ...CreateSingleWebhookOption) (*SingleWebhook, error) {
+func NewSingleWebhook(c flespiapi.Doer, name string, options ...CreateSingleWebhookOption) (*SingleWebhook, error) {
 	webhook := SingleWebhook{Name: name}
 
 	for _, opt := range options {
@@ -21,7 +21,7 @@ func NewSingleWebhook(c *flespi.Client, name string, options ...CreateSingleWebh
 	return result.(*SingleWebhook), nil
 }
 
-func NewChainedWebhook(c *flespi.Client, name string, options ...CreateChainedWebhookOption) (*ChainedWebhook, error) {
+func NewChainedWebhook(c flespiapi.Doer, name string, options ...CreateChainedWebhookOption) (*ChainedWebhook, error) {
 	webhook := ChainedWebhook{Name: name}
 
 	for _, opt := range options {
@@ -37,7 +37,7 @@ func NewChainedWebhook(c *flespi.Client, name string, options ...CreateChainedWe
 	return result.(*ChainedWebhook), nil
 }
 
-func newWebhook(c *flespi.Client, webhook Webhook) (Webhook, error) {
+func newWebhook(c flespiapi.Doer, webhook Webhook) (Webhook, error) {
 	response := webhookResponse{}
 
 	err := c.RequestAPI("POST", "platform/webhooks", []Webhook{webhook}, &response)
@@ -55,7 +55,7 @@ func newWebhook(c *flespi.Client, webhook Webhook) (Webhook, error) {
 	return webhooks[0], nil
 }
 
-func GetWebhook(c *flespi.Client, webhookId int64) (Webhook, error) {
+func GetWebhook(c flespiapi.Doer, webhookId int64) (Webhook, error) {
 	response := webhookResponse{}
 
 	err := c.RequestAPI("GET", fmt.Sprintf("platform/webhooks/%d", webhookId), nil, &response)
@@ -73,7 +73,7 @@ func GetWebhook(c *flespi.Client, webhookId int64) (Webhook, error) {
 	return webhooks[0], nil
 }
 
-func ListWebhooks(c *flespi.Client) ([]Webhook, error) {
+func ListWebhooks(c flespiapi.Doer) ([]Webhook, error) {
 	response := webhookResponse{}
 
 	err := c.RequestAPI("GET", "platform/webhooks/all", nil, &response)
@@ -91,7 +91,7 @@ func ListWebhooks(c *flespi.Client) ([]Webhook, error) {
 	return webhooks, nil
 }
 
-func UpdateWebhook(c *flespi.Client, webhook Webhook) (Webhook, error) {
+func UpdateWebhook(c flespiapi.Doer, webhook Webhook) (Webhook, error) {
 	response := webhookResponse{}
 
 	err := c.RequestAPI("PUT", fmt.Sprintf("platform/webhooks/%d", webhook.GetId()), webhook, &response)
@@ -109,11 +109,11 @@ func UpdateWebhook(c *flespi.Client, webhook Webhook) (Webhook, error) {
 	return webhooks[0], nil
 }
 
-func DeleteWebhook(c *flespi.Client, webhook Webhook) error {
+func DeleteWebhook(c flespiapi.Doer, webhook Webhook) error {
 	return DeleteWebhookById(c, webhook.GetId())
 }
 
-func DeleteWebhookById(c *flespi.Client, webhookId int64) error {
+func DeleteWebhookById(c flespiapi.Doer, webhookId int64) error {
 	err := c.RequestAPI("DELETE", fmt.Sprintf("platform/webhooks/%d", webhookId), nil, nil)
 
 	if err != nil {

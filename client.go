@@ -11,10 +11,9 @@
 //	    log.Fatal(err)
 //	}
 //
-//	stream, err := flespi_stream.NewStream(client, "my-stream", 1)
-//	if err != nil {
-//	    log.Fatal(err)
-//	}
+//	device, err := client.Devices.Create("my-device", true, 5)
+//	streams, err := client.Streams.List()
+//	err = client.Webhooks.DeleteById(42)
 package flespi
 
 import (
@@ -25,7 +24,26 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/mixser/flespi-client/internal/flespiapi"
+	flespi_calculator "github.com/mixser/flespi-client/resources/gateway/calculator"
+	flespi_channel "github.com/mixser/flespi-client/resources/gateway/channel"
+	flespi_device "github.com/mixser/flespi-client/resources/gateway/device"
+	flespi_geofence "github.com/mixser/flespi-client/resources/gateway/geofence"
+	flespi_stream "github.com/mixser/flespi-client/resources/gateway/stream"
+	flespi_token "github.com/mixser/flespi-client/resources/gateway/token"
+	flespi_limit "github.com/mixser/flespi-client/resources/platform/limit"
+	flespi_subaccount "github.com/mixser/flespi-client/resources/platform/subaccount"
+	flespi_webhook "github.com/mixser/flespi-client/resources/platform/webhook"
+	flespi_cdn "github.com/mixser/flespi-client/resources/storage/cdn"
 )
+
+// Doer is the interface resource packages use to make API requests.
+// *Client implements this interface.
+type Doer = flespiapi.Doer
+
+// compile-time check that *Client implements Doer
+var _ Doer = (*Client)(nil)
 
 // Client represents a Flespi API client
 type Client struct {
@@ -34,6 +52,22 @@ type Client struct {
 	HTTPClient  *http.Client
 	RetryConfig *RetryConfig
 	Logger      Logger
+
+	// Gateway sub-clients
+	Devices     *flespi_device.DeviceClient
+	Streams     *flespi_stream.StreamClient
+	Channels    *flespi_channel.ChannelClient
+	Tokens      *flespi_token.TokenClient
+	Calculators *flespi_calculator.CalculatorClient
+	Geofences   *flespi_geofence.GeofenceClient
+
+	// Platform sub-clients
+	Webhooks    *flespi_webhook.WebhookClient
+	Subaccounts *flespi_subaccount.SubaccountClient
+	Limits      *flespi_limit.LimitClient
+
+	// Storage sub-clients
+	CDNs *flespi_cdn.CDNClient
 }
 
 // ClientOption is a function that configures a Client
@@ -77,6 +111,17 @@ func NewClient(host string, token string, options ...ClientOption) (*Client, err
 	for _, opt := range options {
 		opt(c)
 	}
+
+	c.Devices = flespi_device.NewDeviceClient(c)
+	c.Streams = flespi_stream.NewStreamClient(c)
+	c.Channels = flespi_channel.NewChannelClient(c)
+	c.Tokens = flespi_token.NewTokenClient(c)
+	c.Calculators = flespi_calculator.NewCalculatorClient(c)
+	c.Geofences = flespi_geofence.NewGeofenceClient(c)
+	c.Webhooks = flespi_webhook.NewWebhookClient(c)
+	c.Subaccounts = flespi_subaccount.NewSubaccountClient(c)
+	c.Limits = flespi_limit.NewLimitClient(c)
+	c.CDNs = flespi_cdn.NewCDNClient(c)
 
 	return c, nil
 }

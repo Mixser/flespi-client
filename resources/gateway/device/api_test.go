@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	flespi "github.com/mixser/flespi-client"
+	"github.com/mixser/flespi-client/internal/testhelper"
 )
 
 func TestNewDevice(t *testing.T) {
@@ -29,7 +29,7 @@ func TestNewDevice(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	device, err := NewDevice(client, "test-device", true, 5)
 
@@ -64,7 +64,7 @@ func TestGetDevice(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	device, err := GetDevice(client, 789)
 	if err != nil {
@@ -102,7 +102,7 @@ func TestListDevices(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	devices, err := ListDevices(client)
 	if err != nil {
@@ -132,7 +132,7 @@ func TestUpdateDevice(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	device := Device{
 		Id:            789,
@@ -161,7 +161,7 @@ func TestDeleteDevice(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	err := DeleteDeviceById(client, 789)
 	if err != nil {

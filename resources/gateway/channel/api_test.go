@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	flespi "github.com/mixser/flespi-client"
+	"github.com/mixser/flespi-client/internal/testhelper"
 )
 
 func TestNewChannelWithProtocolName(t *testing.T) {
@@ -32,7 +32,7 @@ func TestNewChannelWithProtocolName(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	channel, err := NewChannelWithProtocolName(client, "test-channel", "http")
 
@@ -68,7 +68,7 @@ func TestNewChannelWithProtocolId(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	channel, err := NewChannelWithProtocolId(client, "test-channel", 5)
 
@@ -100,7 +100,7 @@ func TestGetChannel(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	channel, err := GetChannel(client, 789)
 	if err != nil {
@@ -140,7 +140,7 @@ func TestListChannels(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	channels, err := ListChannels(client)
 	if err != nil {
@@ -171,7 +171,7 @@ func TestUpdateChannel(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	channel := Channel{
 		Id:            789,
@@ -201,7 +201,7 @@ func TestDeleteChannel(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	err := DeleteChannelById(client, 789)
 	if err != nil {

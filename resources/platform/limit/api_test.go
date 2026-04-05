@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	flespi "github.com/mixser/flespi-client"
+	"github.com/mixser/flespi-client/internal/testhelper"
 )
 
 func TestGetLimit(t *testing.T) {
@@ -25,7 +25,7 @@ func TestGetLimit(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	limit, err := GetLimit(client, 789)
 	if err != nil {
@@ -61,7 +61,7 @@ func TestListLimits(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, _ := flespi.NewClient(server.URL, "test-token")
+	client := testhelper.New(server.URL)
 
 	limits, err := ListLimits(client)
 	if err != nil {

@@ -2,10 +2,10 @@ package flespi_token
 
 import (
 	"fmt"
-	"github.com/mixser/flespi-client"
+	"github.com/mixser/flespi-client/internal/flespiapi"
 )
 
-func NewToken(c *flespi.Client, info string, options ...CreateTokenOption) (*Token, error) {
+func NewToken(c flespiapi.Doer, info string, options ...CreateTokenOption) (*Token, error) {
 	token := Token{Info: info}
 
 	for _, opt := range options {
@@ -23,7 +23,7 @@ func NewToken(c *flespi.Client, info string, options ...CreateTokenOption) (*Tok
 	return &response.Tokens[0], nil
 }
 
-func ListTokens(c *flespi.Client) ([]Token, error) {
+func ListTokens(c flespiapi.Doer) ([]Token, error) {
 	response := tokensResponse{}
 
 	err := c.RequestAPI("GET", "platform/tokens/all", nil, &response)
@@ -35,7 +35,7 @@ func ListTokens(c *flespi.Client) ([]Token, error) {
 	return response.Tokens, nil
 }
 
-func GetToken(c *flespi.Client, tokenId int64) (*Token, error) {
+func GetToken(c flespiapi.Doer, tokenId int64) (*Token, error) {
 	response := tokensResponse{}
 
 	err := c.RequestAPI("GET", fmt.Sprintf("platform/tokens/%d", tokenId), nil, &response)
@@ -47,7 +47,7 @@ func GetToken(c *flespi.Client, tokenId int64) (*Token, error) {
 	return &response.Tokens[0], nil
 }
 
-func UpdateToken(c *flespi.Client, token Token) (*Token, error) {
+func UpdateToken(c flespiapi.Doer, token Token) (*Token, error) {
 	response := tokensResponse{}
 
 	tokenId := token.Id
@@ -64,10 +64,10 @@ func UpdateToken(c *flespi.Client, token Token) (*Token, error) {
 	return &response.Tokens[0], nil
 }
 
-func DeleteToken(c *flespi.Client, token Token) error {
+func DeleteToken(c flespiapi.Doer, token Token) error {
 	return DeleteTokenById(c, token.Id)
 }
 
-func DeleteTokenById(c *flespi.Client, tokenId int64) error {
+func DeleteTokenById(c flespiapi.Doer, tokenId int64) error {
 	return c.RequestAPI("DELETE", fmt.Sprintf("platform/tokens/%d", tokenId), nil, nil)
 }

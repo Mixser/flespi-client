@@ -3,10 +3,10 @@ package flespi_limit
 import (
 	"fmt"
 
-	"github.com/mixser/flespi-client"
+	"github.com/mixser/flespi-client/internal/flespiapi"
 )
 
-func NewLimit(c *flespi.Client, name string, options ...CreateLimitOption) (*Limit, error) {
+func NewLimit(c flespiapi.Doer, name string, options ...CreateLimitOption) (*Limit, error) {
 	limit := Limit{Name: name}
 
 	for _, opt := range options {
@@ -24,7 +24,7 @@ func NewLimit(c *flespi.Client, name string, options ...CreateLimitOption) (*Lim
 	return &response.Limits[0], nil
 }
 
-func ListLimits(c *flespi.Client) ([]Limit, error) {
+func ListLimits(c flespiapi.Doer) ([]Limit, error) {
 	response := limitsResponse{}
 
 	err := c.RequestAPI("GET", "platform/limits/all", nil, &response)
@@ -36,7 +36,7 @@ func ListLimits(c *flespi.Client) ([]Limit, error) {
 	return response.Limits, nil
 }
 
-func GetLimit(c *flespi.Client, limitId int64) (*Limit, error) {
+func GetLimit(c flespiapi.Doer, limitId int64) (*Limit, error) {
 	response := limitsResponse{}
 
 	err := c.RequestAPI("GET", fmt.Sprintf("platform/limits/%d", limitId), nil, &response)
@@ -48,7 +48,7 @@ func GetLimit(c *flespi.Client, limitId int64) (*Limit, error) {
 	return &response.Limits[0], nil
 }
 
-func UpdateLimit(c *flespi.Client, limit Limit) (*Limit, error) {
+func UpdateLimit(c flespiapi.Doer, limit Limit) (*Limit, error) {
 	if limit.Id == 0 {
 		return nil, fmt.Errorf("ID must be provided")
 	}
@@ -67,7 +67,7 @@ func UpdateLimit(c *flespi.Client, limit Limit) (*Limit, error) {
 	return &response.Limits[0], nil
 }
 
-func DeleteLimit(c *flespi.Client, limit Limit) error {
+func DeleteLimit(c flespiapi.Doer, limit Limit) error {
 	if limit.Id == 0 {
 		return fmt.Errorf("ID must be provided")
 	}
@@ -75,7 +75,7 @@ func DeleteLimit(c *flespi.Client, limit Limit) error {
 	return DeleteLimitById(c, limit.Id)
 }
 
-func DeleteLimitById(c *flespi.Client, limitId int64) error {
+func DeleteLimitById(c flespiapi.Doer, limitId int64) error {
 	err := c.RequestAPI("DELETE", fmt.Sprintf("platform/limits/%d", limitId), nil, nil)
 
 	if err != nil {

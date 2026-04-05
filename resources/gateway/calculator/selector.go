@@ -250,7 +250,7 @@ func NewSelectorInactive(name string, delayThreshold int64) *SelectorInactive {
 }
 
 func unmarshalSelectors(rawSelectors []json.RawMessage) ([]Selector, error) {
-	var selectors []Selector = []Selector{}
+	var selectors = []Selector{}
 
 	for _, rawSelector := range rawSelectors {
 		selector, err := unmarshallSelector(rawSelector)
@@ -275,24 +275,24 @@ func unmarshallSelector(raw json.RawMessage) (Selector, error) {
 	var result Selector
 	var err error
 
-	switch {
-	case rawSelector.Type == "expression":
+	switch rawSelector.Type {
+	case "expression":
 		selector := &SelectorExpression{}
 		err = json.Unmarshal(raw, &selector)
 		result = selector
-	case rawSelector.Type == "datetime":
+	case "datetime":
 		selector := &SelectorDatetime{}
 		err = json.Unmarshal(raw, &selector)
 		result = selector
-	case rawSelector.Type == "geofence":
+	case "geofence":
 		selector := &SelectorGeofence{}
 		err = json.Unmarshal(raw, &selector)
 		result = selector
-	case rawSelector.Type == "calculator":
+	case "calculator":
 		selector := &SelectorCalculator{}
 		err = json.Unmarshal(raw, &selector)
 		result = selector
-	case rawSelector.Type == "inactive":
+	case "inactive":
 		selector := &SelectorInactive{}
 		err = json.Unmarshal(raw, &selector)
 		result = selector

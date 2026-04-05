@@ -7,7 +7,7 @@ import (
 	"time"
 
 	flespi "github.com/mixser/flespi-client"
-	webhook "github.com/mixser/flespi-client/resources/platform/webhook"
+	flespi_webhook "github.com/mixser/flespi-client/resources/platform/webhook"
 )
 
 func main() {
@@ -18,7 +18,7 @@ func main() {
 	}
 
 	// Example 1: Handle not found errors
-	hook, err := webhook.GetWebhook(client, 999999)
+	hook, err := client.Webhooks.Get(999999)
 	if err != nil {
 		if flespi.IsNotFoundError(err) {
 			fmt.Println("Webhook not found - this is expected")
@@ -30,12 +30,12 @@ func main() {
 	}
 
 	// Example 2: Handle detailed API errors
-	_, err = webhook.NewSingleWebhook(client, "", webhook.SWWithConfiguration(webhook.CustomServerConfiguration{
+	_, err = client.Webhooks.NewSingle("", flespi_webhook.SWWithConfiguration(flespi_webhook.CustomServerConfiguration{
 		Type:    "custom-server",
 		Uri:     "invalid-uri",
 		Method:  "POST",
 		Body:    "{}",
-		Headers: []webhook.Header{},
+		Headers: []flespi_webhook.Header{},
 	}))
 	if err != nil {
 		if apiErr, ok := err.(*flespi.APIError); ok {

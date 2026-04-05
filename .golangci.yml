@@ -1,43 +1,49 @@
+version: "2"
+run:
+  go: "1.22"
 linters:
   enable:
-    - gofmt
-    - govet
-    - errcheck
-    - staticcheck
-    - unused
-    - gosimple
-    - ineffassign
-    - typecheck
     - copyloopvar
     - gocyclo
+    - gosec
     - misspell
     - revive
-    - gosec
     - unconvert
-
-linters-settings:
-  gocyclo:
-    min-complexity: 15
-
-  revive:
+  settings:
+    gocyclo:
+      min-complexity: 15
+    gosec:
+      excludes:
+        - G402
+    revive:
+      rules:
+        - name: exported
+          severity: warning
+          disabled: false
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
     rules:
-      - name: exported
-        severity: warning
-        disabled: false
-
-  gosec:
-    excludes:
-      - G402 # TLS MinVersion
-
-issues:
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - errcheck
-        - gosec
-  exclude-dirs:
-    - examples
-
-run:
-  timeout: 5m
-  go: '1.22'
+      - linters:
+          - errcheck
+          - gosec
+        path: _test\.go
+    paths:
+      - examples
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+  exclusions:
+    generated: lax
+    paths:
+      - examples
+      - third_party$
+      - builtin$
+      - examples$

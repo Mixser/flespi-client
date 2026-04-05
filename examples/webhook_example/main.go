@@ -5,7 +5,7 @@ import (
 	"log"
 
 	flespi "github.com/mixser/flespi-client"
-	webhook "github.com/mixser/flespi-client/resources/platform/webhook"
+	flespi_webhook "github.com/mixser/flespi-client/resources/platform/webhook"
 )
 
 func main() {
@@ -16,20 +16,20 @@ func main() {
 	}
 
 	// Create a single webhook
-	hook, err := webhook.NewSingleWebhook(client, "example-webhook",
-		webhook.SWWithConfiguration(webhook.CustomServerConfiguration{
+	hook, err := client.Webhooks.NewSingle("example-webhook",
+		flespi_webhook.SWWithConfiguration(flespi_webhook.CustomServerConfiguration{
 			Type:   "custom-server",
 			Uri:    "https://example.com/webhook",
 			Method: "POST",
 			Body:   `{"event": "{{event}}", "timestamp": "{{timestamp}}"}`,
-			Headers: []webhook.Header{
+			Headers: []flespi_webhook.Header{
 				{Name: "X-Custom-Header", Value: "example-value"},
 				{Name: "Content-Type", Value: "application/json"},
 			},
 		}),
-		webhook.SWWithTrigger(webhook.Trigger{
+		flespi_webhook.SWWithTrigger(flespi_webhook.Trigger{
 			Topic: "platform/messages",
-			Filter: &webhook.TriggerFilter{
+			Filter: &flespi_webhook.TriggerFilter{
 				CID:     123,
 				Payload: "ident != null",
 			},
@@ -42,20 +42,20 @@ func main() {
 	fmt.Printf("Created webhook: %s (ID: %d)\n", hook.Name, hook.Id)
 
 	// Create a chained webhook
-	chainedHook, err := webhook.NewChainedWebhook(client, "chained-webhook",
-		webhook.CWWithConfiguration(webhook.CustomServerConfiguration{
+	chainedHook, err := client.Webhooks.NewChained("chained-webhook",
+		flespi_webhook.CWWithConfiguration(flespi_webhook.CustomServerConfiguration{
 			Type:    "custom-server",
 			Uri:     "https://example.com/first",
 			Method:  "POST",
 			Body:    `{"step": 1}`,
-			Headers: []webhook.Header{},
+			Headers: []flespi_webhook.Header{},
 		}),
-		webhook.CWWithConfiguration(webhook.CustomServerConfiguration{
+		flespi_webhook.CWWithConfiguration(flespi_webhook.CustomServerConfiguration{
 			Type:    "custom-server",
 			Uri:     "https://example.com/second",
 			Method:  "POST",
 			Body:    `{"step": 2}`,
-			Headers: []webhook.Header{},
+			Headers: []flespi_webhook.Header{},
 		}),
 	)
 	if err != nil {
@@ -65,20 +65,20 @@ func main() {
 	fmt.Printf("Created chained webhook: %s (ID: %d)\n", chainedHook.Name, chainedHook.Id)
 
 	// List all webhooks
-	webhooks, err := webhook.ListWebhooks(client)
+	all, err := client.Webhooks.List()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Total webhooks: %d\n", len(webhooks))
+	fmt.Printf("Total webhooks: %d\n", len(all))
 
 	// Delete webhooks
-	err = webhook.DeleteWebhook(client, hook)
+	err = client.Webhooks.Delete(hook)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = webhook.DeleteWebhook(client, chainedHook)
+	err = client.Webhooks.Delete(chainedHook)
 	if err != nil {
 		log.Fatal(err)
 	}
