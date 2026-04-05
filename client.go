@@ -130,7 +130,7 @@ func (c *Client) doRequest(req *http.Request, method, endpoint string) ([]byte, 
 	req.Header.Set("Authorization", fmt.Sprintf("FlespiToken %s", c.Token))
 	req.Header.Set("Content-Type", "application/json")
 
-	res, err := c.HTTPClient.Do(req)
+	res, err := c.HTTPClient.Do(req) //nolint:gosec // G704: URL is constructed from c.Host, set at client init — not user input
 	if err != nil {
 		return nil, err
 	}
