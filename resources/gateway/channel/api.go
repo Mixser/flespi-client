@@ -6,7 +6,7 @@ import (
 	"github.com/mixser/flespi-client/internal/flespiapi"
 )
 
-func NewChannelWithProtocolName(c flespiapi.Doer, name string, protocolName string, options ...CreateChannelOption) (*Channel, error) {
+func NewChannelWithProtocolName(c flespiapi.APIRequester, name string, protocolName string, options ...CreateChannelOption) (*Channel, error) {
 	channel := Channel{
 		Name:          name,
 		ProtocolName:  protocolName,
@@ -21,7 +21,7 @@ func NewChannelWithProtocolName(c flespiapi.Doer, name string, protocolName stri
 	return newChannel(c, channel)
 }
 
-func NewChannelWithProtocolId(c flespiapi.Doer, name string, protocolId int64, options ...CreateChannelOption) (*Channel, error) {
+func NewChannelWithProtocolId(c flespiapi.APIRequester, name string, protocolId int64, options ...CreateChannelOption) (*Channel, error) {
 	channel := Channel{
 		Name:          name,
 		ProtocolId:    protocolId,
@@ -36,7 +36,7 @@ func NewChannelWithProtocolId(c flespiapi.Doer, name string, protocolId int64, o
 	return newChannel(c, channel)
 }
 
-func newChannel(c flespiapi.Doer, channel Channel) (*Channel, error) {
+func newChannel(c flespiapi.APIRequester, channel Channel) (*Channel, error) {
 	response := channelsResponse{}
 
 	err := c.RequestAPI("POST", "gw/channels", []Channel{channel}, &response)
@@ -48,7 +48,7 @@ func newChannel(c flespiapi.Doer, channel Channel) (*Channel, error) {
 	return &response.Channels[0], nil
 }
 
-func ListChannels(c flespiapi.Doer) ([]Channel, error) {
+func ListChannels(c flespiapi.APIRequester) ([]Channel, error) {
 	response := channelsResponse{}
 
 	err := c.RequestAPI("GET", "gw/channels/all", nil, &response)
@@ -60,7 +60,7 @@ func ListChannels(c flespiapi.Doer) ([]Channel, error) {
 	return response.Channels, nil
 }
 
-func GetChannel(c flespiapi.Doer, channelId int64) (*Channel, error) {
+func GetChannel(c flespiapi.APIRequester, channelId int64) (*Channel, error) {
 	response := channelsResponse{}
 
 	err := c.RequestAPI("GET", fmt.Sprintf("gw/channels/%d?fields=id,name,protocol_id,protocol_name,messages_ttl,enabled,configuration", channelId), nil, &response)
@@ -72,7 +72,7 @@ func GetChannel(c flespiapi.Doer, channelId int64) (*Channel, error) {
 	return &response.Channels[0], nil
 }
 
-func UpdateChannel(c flespiapi.Doer, channel Channel) (*Channel, error) {
+func UpdateChannel(c flespiapi.APIRequester, channel Channel) (*Channel, error) {
 	response := channelsResponse{}
 
 	channelId := channel.Id
@@ -91,7 +91,7 @@ func UpdateChannel(c flespiapi.Doer, channel Channel) (*Channel, error) {
 	return &response.Channels[0], nil
 }
 
-func DeleteChannel(c flespiapi.Doer, channel Channel) error {
+func DeleteChannel(c flespiapi.APIRequester, channel Channel) error {
 	if channel.Id == 0 {
 		return fmt.Errorf("ID must be provided")
 	}
@@ -99,6 +99,6 @@ func DeleteChannel(c flespiapi.Doer, channel Channel) error {
 	return DeleteChannelById(c, channel.Id)
 }
 
-func DeleteChannelById(c flespiapi.Doer, channelId int64) error {
+func DeleteChannelById(c flespiapi.APIRequester, channelId int64) error {
 	return c.RequestAPI("DELETE", fmt.Sprintf("gw/channels/%d", channelId), nil, nil)
 }

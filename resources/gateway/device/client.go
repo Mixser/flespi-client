@@ -5,11 +5,11 @@ import "github.com/mixser/flespi-client/internal/flespiapi"
 // DeviceClient provides receiver-based methods for managing Flespi devices.
 // Access it via Client.Devices after creating a flespi.Client.
 type DeviceClient struct {
-	c flespiapi.Doer
+	c flespiapi.APIRequester
 }
 
-// NewDeviceClient creates a DeviceClient wrapping the given flespiapi.Doer.
-func NewDeviceClient(c flespiapi.Doer) *DeviceClient {
+// NewDeviceClient creates a DeviceClient wrapping the given flespiapi.APIRequester.
+func NewDeviceClient(c flespiapi.APIRequester) *DeviceClient {
 	return &DeviceClient{c: c}
 }
 

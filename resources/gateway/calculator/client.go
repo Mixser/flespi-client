@@ -5,11 +5,11 @@ import "github.com/mixser/flespi-client/internal/flespiapi"
 // CalculatorClient provides receiver-based methods for managing Flespi calculators.
 // Access it via Client.Calculators after creating a flespi.Client.
 type CalculatorClient struct {
-	c flespiapi.Doer
+	c flespiapi.APIRequester
 }
 
-// NewCalculatorClient creates a CalculatorClient wrapping the given flespiapi.Doer.
-func NewCalculatorClient(c flespiapi.Doer) *CalculatorClient {
+// NewCalculatorClient creates a CalculatorClient wrapping the given flespiapi.APIRequester.
+func NewCalculatorClient(c flespiapi.APIRequester) *CalculatorClient {
 	return &CalculatorClient{c: c}
 }
 

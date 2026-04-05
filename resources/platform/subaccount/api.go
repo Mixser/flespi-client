@@ -6,7 +6,7 @@ import (
 	"github.com/mixser/flespi-client/internal/flespiapi"
 )
 
-func NewSubaccount(client flespiapi.Doer, name string, options ...CreateSubaccountOption) (*Subaccount, error) {
+func NewSubaccount(client flespiapi.APIRequester, name string, options ...CreateSubaccountOption) (*Subaccount, error) {
 	subaccount := Subaccount{Name: name}
 
 	for _, opt := range options {
@@ -25,7 +25,7 @@ func NewSubaccount(client flespiapi.Doer, name string, options ...CreateSubaccou
 
 }
 
-func ListSubaccounts(client flespiapi.Doer) ([]Subaccount, error) {
+func ListSubaccounts(client flespiapi.APIRequester) ([]Subaccount, error) {
 	response := subaccountsResponse{}
 
 	err := client.RequestAPI("GET", "platform/subaccounts/all", nil, &response)
@@ -37,7 +37,7 @@ func ListSubaccounts(client flespiapi.Doer) ([]Subaccount, error) {
 	return response.Subaccounts, nil
 }
 
-func GetSubaccount(client flespiapi.Doer, subaccountId int64) (*Subaccount, error) {
+func GetSubaccount(client flespiapi.APIRequester, subaccountId int64) (*Subaccount, error) {
 	response := subaccountsResponse{}
 
 	err := client.RequestAPI("GET", fmt.Sprintf("platform/subaccounts/%d", subaccountId), nil, &response)
@@ -49,7 +49,7 @@ func GetSubaccount(client flespiapi.Doer, subaccountId int64) (*Subaccount, erro
 	return &response.Subaccounts[0], nil
 }
 
-func UpdateSubaccount(client flespiapi.Doer, subaccount Subaccount) (*Subaccount, error) {
+func UpdateSubaccount(client flespiapi.APIRequester, subaccount Subaccount) (*Subaccount, error) {
 	if subaccount.Id == 0 {
 		return nil, fmt.Errorf("id should be defined before update")
 	}
@@ -70,7 +70,7 @@ func UpdateSubaccount(client flespiapi.Doer, subaccount Subaccount) (*Subaccount
 	return &response.Subaccounts[0], nil
 }
 
-func DeleteSubaccount(client flespiapi.Doer, subaccount Subaccount) error {
+func DeleteSubaccount(client flespiapi.APIRequester, subaccount Subaccount) error {
 	if subaccount.Id == 0 {
 		return fmt.Errorf("id should be defined before delete")
 	}
@@ -78,7 +78,7 @@ func DeleteSubaccount(client flespiapi.Doer, subaccount Subaccount) error {
 	return DeleteSubaccountById(client, subaccount.Id)
 }
 
-func DeleteSubaccountById(client flespiapi.Doer, subaccountId int64) error {
+func DeleteSubaccountById(client flespiapi.APIRequester, subaccountId int64) error {
 	err := client.RequestAPI("DELETE", fmt.Sprintf("platform/subaccounts/%d", subaccountId), nil, nil)
 
 	if err != nil {

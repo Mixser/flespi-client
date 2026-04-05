@@ -5,7 +5,7 @@ import (
 	"github.com/mixser/flespi-client/internal/flespiapi"
 )
 
-func NewCDN(client flespiapi.Doer, name string, opts ...CreateCDNOption) (*CDN, error) {
+func NewCDN(client flespiapi.APIRequester, name string, opts ...CreateCDNOption) (*CDN, error) {
 	cdn := CDN{Name: name}
 
 	for _, opt := range opts {
@@ -23,7 +23,7 @@ func NewCDN(client flespiapi.Doer, name string, opts ...CreateCDNOption) (*CDN, 
 	return &response.CDNS[0], nil
 }
 
-func ListCDNs(client flespiapi.Doer) ([]CDN, error) {
+func ListCDNs(client flespiapi.APIRequester) ([]CDN, error) {
 	response := cdnsResponse{}
 
 	err := client.RequestAPI("GET", "storage/cdns/all", nil, &response)
@@ -35,7 +35,7 @@ func ListCDNs(client flespiapi.Doer) ([]CDN, error) {
 	return response.CDNS, nil
 }
 
-func GetCDN(client flespiapi.Doer, cdnId int64) (*CDN, error) {
+func GetCDN(client flespiapi.APIRequester, cdnId int64) (*CDN, error) {
 	response := cdnsResponse{}
 
 	err := client.RequestAPI("GET", fmt.Sprintf("storage/cdns/%d", cdnId), nil, &response)
@@ -47,7 +47,7 @@ func GetCDN(client flespiapi.Doer, cdnId int64) (*CDN, error) {
 	return &response.CDNS[0], nil
 }
 
-func UpdateCDN(client flespiapi.Doer, cdn CDN) (*CDN, error) {
+func UpdateCDN(client flespiapi.APIRequester, cdn CDN) (*CDN, error) {
 	if cdn.Id == 0 {
 		return nil, fmt.Errorf("ID must be provided")
 	}
@@ -62,7 +62,7 @@ func UpdateCDN(client flespiapi.Doer, cdn CDN) (*CDN, error) {
 	return &response.CDNS[0], nil
 }
 
-func DeleteCDN(client flespiapi.Doer, cdn CDN) error {
+func DeleteCDN(client flespiapi.APIRequester, cdn CDN) error {
 	if cdn.Id == 0 {
 		return fmt.Errorf("ID must be provided")
 	}
@@ -76,7 +76,7 @@ func DeleteCDN(client flespiapi.Doer, cdn CDN) error {
 	return nil
 }
 
-func DeleteCDNById(client flespiapi.Doer, cdnId int64) error {
+func DeleteCDNById(client flespiapi.APIRequester, cdnId int64) error {
 	err := client.RequestAPI("DELETE", fmt.Sprintf("storage/cdns/%d", cdnId), nil, nil)
 
 	if err != nil {

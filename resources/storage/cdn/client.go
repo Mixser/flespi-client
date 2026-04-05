@@ -5,11 +5,11 @@ import "github.com/mixser/flespi-client/internal/flespiapi"
 // CDNClient provides receiver-based methods for managing Flespi CDNs.
 // Access it via Client.CDNs after creating a flespi.Client.
 type CDNClient struct {
-	c flespiapi.Doer
+	c flespiapi.APIRequester
 }
 
-// NewCDNClient creates a CDNClient wrapping the given flespiapi.Doer.
-func NewCDNClient(c flespiapi.Doer) *CDNClient {
+// NewCDNClient creates a CDNClient wrapping the given flespiapi.APIRequester.
+func NewCDNClient(c flespiapi.APIRequester) *CDNClient {
 	return &CDNClient{c: c}
 }
 

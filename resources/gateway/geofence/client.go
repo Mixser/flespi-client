@@ -5,11 +5,11 @@ import "github.com/mixser/flespi-client/internal/flespiapi"
 // GeofenceClient provides receiver-based methods for managing Flespi geofences.
 // Access it via Client.Geofences after creating a flespi.Client.
 type GeofenceClient struct {
-	c flespiapi.Doer
+	c flespiapi.APIRequester
 }
 
-// NewGeofenceClient creates a GeofenceClient wrapping the given flespiapi.Doer.
-func NewGeofenceClient(c flespiapi.Doer) *GeofenceClient {
+// NewGeofenceClient creates a GeofenceClient wrapping the given flespiapi.APIRequester.
+func NewGeofenceClient(c flespiapi.APIRequester) *GeofenceClient {
 	return &GeofenceClient{c: c}
 }
 

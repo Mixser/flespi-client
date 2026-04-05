@@ -6,7 +6,7 @@ import (
 	"github.com/mixser/flespi-client/internal/flespiapi"
 )
 
-func NewCalculator(client flespiapi.Doer, name string, options ...CreateCalculatorOption) (*Calculator, error) {
+func NewCalculator(client flespiapi.APIRequester, name string, options ...CreateCalculatorOption) (*Calculator, error) {
 	calc := Calculator{
 		Name: name,
 	}
@@ -24,7 +24,7 @@ func NewCalculator(client flespiapi.Doer, name string, options ...CreateCalculat
 	return &response.Calculators[0], nil
 }
 
-func ListCalculators(client flespiapi.Doer) ([]Calculator, error) {
+func ListCalculators(client flespiapi.APIRequester) ([]Calculator, error) {
 	response := calculatorsResponse{}
 
 	if err := client.RequestAPI("GET", "gw/calcs/all", nil, &response); err != nil {
@@ -34,7 +34,7 @@ func ListCalculators(client flespiapi.Doer) ([]Calculator, error) {
 	return response.Calculators, nil
 }
 
-func GetCalculator(client flespiapi.Doer, calculatorId int64) (*Calculator, error) {
+func GetCalculator(client flespiapi.APIRequester, calculatorId int64) (*Calculator, error) {
 	response := calculatorsResponse{}
 
 	if err := client.RequestAPI("GET", fmt.Sprintf("gw/calcs/%d", calculatorId), nil, &response); err != nil {
@@ -44,7 +44,7 @@ func GetCalculator(client flespiapi.Doer, calculatorId int64) (*Calculator, erro
 	return &response.Calculators[0], nil
 }
 
-func UpdateCalculator(client flespiapi.Doer, calc Calculator) (*Calculator, error) {
+func UpdateCalculator(client flespiapi.APIRequester, calc Calculator) (*Calculator, error) {
 	response := calculatorsResponse{}
 
 	calculatorId := calc.Id
@@ -59,7 +59,7 @@ func UpdateCalculator(client flespiapi.Doer, calc Calculator) (*Calculator, erro
 	return &response.Calculators[0], nil
 }
 
-func DeleteCalculator(client flespiapi.Doer, calc Calculator) error {
+func DeleteCalculator(client flespiapi.APIRequester, calc Calculator) error {
 	if calc.Id == 0 {
 		return fmt.Errorf("calculator id is not set")
 	}
@@ -67,6 +67,6 @@ func DeleteCalculator(client flespiapi.Doer, calc Calculator) error {
 	return DeleteCalculatorById(client, calc.Id)
 }
 
-func DeleteCalculatorById(client flespiapi.Doer, calculatorId int64) error {
+func DeleteCalculatorById(client flespiapi.APIRequester, calculatorId int64) error {
 	return client.RequestAPI("DELETE", fmt.Sprintf("gw/calcs/%d", calculatorId), nil, nil)
 }

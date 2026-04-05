@@ -5,11 +5,11 @@ import "github.com/mixser/flespi-client/internal/flespiapi"
 // TokenClient provides receiver-based methods for managing Flespi tokens.
 // Access it via Client.Tokens after creating a flespi.Client.
 type TokenClient struct {
-	c flespiapi.Doer
+	c flespiapi.APIRequester
 }
 
-// NewTokenClient creates a TokenClient wrapping the given flespiapi.Doer.
-func NewTokenClient(c flespiapi.Doer) *TokenClient {
+// NewTokenClient creates a TokenClient wrapping the given flespiapi.APIRequester.
+func NewTokenClient(c flespiapi.APIRequester) *TokenClient {
 	return &TokenClient{c: c}
 }
 

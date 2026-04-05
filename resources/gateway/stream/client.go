@@ -5,11 +5,11 @@ import "github.com/mixser/flespi-client/internal/flespiapi"
 // StreamClient provides receiver-based methods for managing Flespi streams.
 // Access it via Client.Streams after creating a flespi.Client.
 type StreamClient struct {
-	c flespiapi.Doer
+	c flespiapi.APIRequester
 }
 
-// NewStreamClient creates a StreamClient wrapping the given flespiapi.Doer.
-func NewStreamClient(c flespiapi.Doer) *StreamClient {
+// NewStreamClient creates a StreamClient wrapping the given flespiapi.APIRequester.
+func NewStreamClient(c flespiapi.APIRequester) *StreamClient {
 	return &StreamClient{c: c}
 }
 

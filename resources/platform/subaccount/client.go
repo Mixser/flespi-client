@@ -5,11 +5,11 @@ import "github.com/mixser/flespi-client/internal/flespiapi"
 // SubaccountClient provides receiver-based methods for managing Flespi subaccounts.
 // Access it via Client.Subaccounts after creating a flespi.Client.
 type SubaccountClient struct {
-	c flespiapi.Doer
+	c flespiapi.APIRequester
 }
 
-// NewSubaccountClient creates a SubaccountClient wrapping the given flespiapi.Doer.
-func NewSubaccountClient(c flespiapi.Doer) *SubaccountClient {
+// NewSubaccountClient creates a SubaccountClient wrapping the given flespiapi.APIRequester.
+func NewSubaccountClient(c flespiapi.APIRequester) *SubaccountClient {
 	return &SubaccountClient{c: c}
 }
 

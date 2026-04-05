@@ -5,11 +5,11 @@ import "github.com/mixser/flespi-client/internal/flespiapi"
 // ChannelClient provides receiver-based methods for managing Flespi channels.
 // Access it via Client.Channels after creating a flespi.Client.
 type ChannelClient struct {
-	c flespiapi.Doer
+	c flespiapi.APIRequester
 }
 
-// NewChannelClient creates a ChannelClient wrapping the given flespiapi.Doer.
-func NewChannelClient(c flespiapi.Doer) *ChannelClient {
+// NewChannelClient creates a ChannelClient wrapping the given flespiapi.APIRequester.
+func NewChannelClient(c flespiapi.APIRequester) *ChannelClient {
 	return &ChannelClient{c: c}
 }
 

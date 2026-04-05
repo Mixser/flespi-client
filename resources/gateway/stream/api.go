@@ -6,7 +6,7 @@ import (
 	"github.com/mixser/flespi-client/internal/flespiapi"
 )
 
-func NewStream(c flespiapi.Doer, name string, protocolId int64, options ...CreateStreamOption) (*Stream, error) {
+func NewStream(c flespiapi.APIRequester, name string, protocolId int64, options ...CreateStreamOption) (*Stream, error) {
 	stream := Stream{
 		Name:          name,
 		ProtocolId:    protocolId,
@@ -28,7 +28,7 @@ func NewStream(c flespiapi.Doer, name string, protocolId int64, options ...Creat
 	return &response.Streams[0], nil
 }
 
-func GetStream(c flespiapi.Doer, streamId int64) (*Stream, error) {
+func GetStream(c flespiapi.APIRequester, streamId int64) (*Stream, error) {
 	response := streamsResponse{}
 
 	err := c.RequestAPI("GET", fmt.Sprintf("gw/streams/%d", streamId), nil, &response)
@@ -40,7 +40,7 @@ func GetStream(c flespiapi.Doer, streamId int64) (*Stream, error) {
 	return &response.Streams[0], nil
 }
 
-func ListStreams(c flespiapi.Doer) ([]Stream, error) {
+func ListStreams(c flespiapi.APIRequester) ([]Stream, error) {
 	response := streamsResponse{}
 
 	err := c.RequestAPI("GET", "gw/streams/all", nil, &response)
@@ -52,7 +52,7 @@ func ListStreams(c flespiapi.Doer) ([]Stream, error) {
 	return response.Streams, nil
 }
 
-func UpdateStream(c flespiapi.Doer, stream Stream) (*Stream, error) {
+func UpdateStream(c flespiapi.APIRequester, stream Stream) (*Stream, error) {
 	if stream.Id == 0 {
 		return nil, fmt.Errorf("ID must be provided")
 	}
@@ -72,11 +72,11 @@ func UpdateStream(c flespiapi.Doer, stream Stream) (*Stream, error) {
 	return &response.Streams[0], nil
 }
 
-func DeleteStreamById(c flespiapi.Doer, streamId int64) error {
+func DeleteStreamById(c flespiapi.APIRequester, streamId int64) error {
 	return c.RequestAPI("DELETE", fmt.Sprintf("gw/streams/%d", streamId), nil, nil)
 }
 
-func DeleteStream(c flespiapi.Doer, stream Stream) error {
+func DeleteStream(c flespiapi.APIRequester, stream Stream) error {
 	if stream.Id == 0 {
 		return fmt.Errorf("ID must be provided")
 	}

@@ -5,11 +5,11 @@ import "github.com/mixser/flespi-client/internal/flespiapi"
 // WebhookClient provides receiver-based methods for managing Flespi webhooks.
 // Access it via Client.Webhooks after creating a flespi.Client.
 type WebhookClient struct {
-	c flespiapi.Doer
+	c flespiapi.APIRequester
 }
 
-// NewWebhookClient creates a WebhookClient wrapping the given flespiapi.Doer.
-func NewWebhookClient(c flespiapi.Doer) *WebhookClient {
+// NewWebhookClient creates a WebhookClient wrapping the given flespiapi.APIRequester.
+func NewWebhookClient(c flespiapi.APIRequester) *WebhookClient {
 	return &WebhookClient{c: c}
 }
 

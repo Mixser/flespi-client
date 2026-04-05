@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-// TestClient is a minimal Doer implementation for use in tests.
+// TestClient is a minimal APIRequester implementation for use in tests.
 type TestClient struct {
 	baseURL string
 	token   string

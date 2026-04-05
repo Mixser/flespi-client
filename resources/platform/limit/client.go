@@ -5,11 +5,11 @@ import "github.com/mixser/flespi-client/internal/flespiapi"
 // LimitClient provides receiver-based methods for managing Flespi limits.
 // Access it via Client.Limits after creating a flespi.Client.
 type LimitClient struct {
-	c flespiapi.Doer
+	c flespiapi.APIRequester
 }
 
-// NewLimitClient creates a LimitClient wrapping the given flespiapi.Doer.
-func NewLimitClient(c flespiapi.Doer) *LimitClient {
+// NewLimitClient creates a LimitClient wrapping the given flespiapi.APIRequester.
+func NewLimitClient(c flespiapi.APIRequester) *LimitClient {
 	return &LimitClient{c: c}
 }
 

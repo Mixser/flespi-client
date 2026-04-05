@@ -38,12 +38,12 @@ import (
 	flespi_cdn "github.com/mixser/flespi-client/resources/storage/cdn"
 )
 
-// Doer is the interface resource packages use to make API requests.
+// APIRequester is the interface resource packages use to make API requests.
 // *Client implements this interface.
-type Doer = flespiapi.Doer
+type APIRequester = flespiapi.APIRequester
 
-// compile-time check that *Client implements Doer
-var _ Doer = (*Client)(nil)
+// compile-time check that *Client implements APIRequester
+var _ APIRequester = (*Client)(nil)
 
 // Client represents a Flespi API client
 type Client struct {

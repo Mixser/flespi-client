@@ -5,7 +5,7 @@ import (
 	"github.com/mixser/flespi-client/internal/flespiapi"
 )
 
-func ListGeofences(c flespiapi.Doer) ([]Geofence, error) {
+func ListGeofences(c flespiapi.APIRequester) ([]Geofence, error) {
 	response := geofencesResponse{}
 
 	err := c.RequestAPI("GET", "gw/geofences/all?fields=id,name,enabled,priority,geometry", nil, &response)
@@ -17,7 +17,7 @@ func ListGeofences(c flespiapi.Doer) ([]Geofence, error) {
 	return response.Geofences, nil
 }
 
-func NewGeofence(c flespiapi.Doer, name string, options ...CreateGeofenceOption) (*Geofence, error) {
+func NewGeofence(c flespiapi.APIRequester, name string, options ...CreateGeofenceOption) (*Geofence, error) {
 	geofence := Geofence{Name: name}
 
 	for _, opt := range options {
@@ -35,7 +35,7 @@ func NewGeofence(c flespiapi.Doer, name string, options ...CreateGeofenceOption)
 	return &response.Geofences[0], nil
 }
 
-func UpdateGeofence(c flespiapi.Doer, geofence Geofence) (*Geofence, error) {
+func UpdateGeofence(c flespiapi.APIRequester, geofence Geofence) (*Geofence, error) {
 	response := geofencesResponse{}
 
 	geofenceId := geofence.Id
@@ -50,10 +50,10 @@ func UpdateGeofence(c flespiapi.Doer, geofence Geofence) (*Geofence, error) {
 	return &response.Geofences[0], nil
 }
 
-func DeleteGeofence(c flespiapi.Doer, geofence Geofence) error {
+func DeleteGeofence(c flespiapi.APIRequester, geofence Geofence) error {
 	return DeleteGeofenceById(c, geofence.Id)
 }
 
-func DeleteGeofenceById(c flespiapi.Doer, geofenceId int64) error {
+func DeleteGeofenceById(c flespiapi.APIRequester, geofenceId int64) error {
 	return c.RequestAPI("DELETE", fmt.Sprintf("gw/geofences/%d", geofenceId), nil, nil)
 }
