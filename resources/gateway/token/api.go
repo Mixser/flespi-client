@@ -13,16 +13,16 @@ func NewToken(c flespiapi.APIRequester, info string, options ...CreateTokenOptio
 		opt(&token)
 	}
 
-	subAccountId := token.SubAccountId
-	token.SubAccountId = 0
+	accountId := token.AccountId
+	token.AccountId = 0
 
-	// Restore SubAccountId after request
-	defer func() { token.SubAccountId = subAccountId }()
+	// Restore AccountId after request
+	defer func() { token.AccountId = accountId }()
 
 	var headers map[string]string
-	if subAccountId != 0 {
+	if accountId != 0 {
 		headers = map[string]string{
-			"x-flespi-cid": fmt.Sprintf("%d", subAccountId),
+			"x-flespi-cid": fmt.Sprintf("%d", accountId),
 		}
 	}
 
