@@ -8,4 +8,6 @@ import "context"
 type APIRequester interface {
 	RequestAPI(method, endpoint string, payload, response interface{}) error
 	RequestAPIWithContext(ctx context.Context, method, endpoint string, payload, response interface{}) error
+	RequestAPIWithHeaders(method, endpoint string, headers map[string]string, payload, response interface{}) error
+	RequestAPIWithContextAndHeaders(ctx context.Context, method, endpoint string, headers map[string]string, payload, response interface{}) error
 }

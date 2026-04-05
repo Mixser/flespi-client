@@ -149,13 +149,19 @@ func (c *Client) doRequest(req *http.Request, method, endpoint string) ([]byte, 
 	return body, nil
 }
 
-// RequestAPI makes an API request without context (uses context.Background())
-func (c *Client) RequestAPI(method string, endpoint string, payload interface{}, response interface{}) error {
-	return c.RequestAPIWithContext(context.Background(), method, endpoint, payload, response)
+func (c *Client) RequestAPI(method, endpoint string, payload, response interface{}) error {
+	return c.RequestAPIWithContextAndHeaders(context.Background(), method, endpoint, nil, payload, response)
 }
 
-// RequestAPIWithContext makes an API request with context support
-func (c *Client) RequestAPIWithContext(ctx context.Context, method string, endpoint string, payload interface{}, response interface{}) error {
+func (c *Client) RequestAPIWithContext(ctx context.Context, method, endpoint string, payload, response interface{}) error {
+	return c.RequestAPIWithContextAndHeaders(ctx, method, endpoint, nil, payload, response)
+}
+
+func (c *Client) RequestAPIWithHeaders(method, endpoint string, headers map[string]string, payload, response interface{}) error {
+	return c.RequestAPIWithContextAndHeaders(context.Background(), method, endpoint, headers, payload, response)
+}
+
+func (c *Client) RequestAPIWithContextAndHeaders(ctx context.Context, method, endpoint string, headers map[string]string, payload, response interface{}) error {
 	c.logRequest(method, endpoint, payload)
 
 	var body io.Reader
@@ -175,6 +181,10 @@ func (c *Client) RequestAPIWithContext(ctx context.Context, method string, endpo
 		return err
 	}
 
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+
 	var resp []byte
 	if c.RetryConfig != nil && c.RetryConfig.MaxRetries > 0 {
 		resp, err = c.doRequestWithRetry(ctx, req, method, endpoint)
@@ -190,8 +200,7 @@ func (c *Client) RequestAPIWithContext(ctx context.Context, method string, endpo
 	c.logResponse(method, endpoint, 200, nil)
 
 	if response != nil {
-		err = json.Unmarshal(resp, response)
-		if err != nil {
+		if err = json.Unmarshal(resp, response); err != nil {
 			c.logError("Failed to unmarshal response: %v", err)
 			return err
 		}

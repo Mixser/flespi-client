@@ -2,6 +2,7 @@ package flespi_token
 
 import (
 	"fmt"
+
 	"github.com/mixser/flespi-client/internal/flespiapi"
 )
 
@@ -12,11 +13,22 @@ func NewToken(c flespiapi.APIRequester, info string, options ...CreateTokenOptio
 		opt(&token)
 	}
 
+	subAccountId := token.SubAccountId
+	token.SubAccountId = 0
+
+	// Restore SubAccountId after request
+	defer func() { token.SubAccountId = subAccountId }()
+
+	var headers map[string]string
+	if subAccountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", subAccountId),
+		}
+	}
+
 	response := tokensResponse{}
 
-	err := c.RequestAPI("POST", "platform/tokens", []Token{token}, &response)
-
-	if err != nil {
+	if err := c.RequestAPIWithHeaders("POST", "platform/tokens", headers, []Token{token}, &response); err != nil {
 		return nil, err
 	}
 
