@@ -11,7 +11,8 @@ type Token struct {
 	Expire int64 `json:"expire"`
 	TTL    int64 `json:"ttl"`
 
-	Metadata map[string]string `json:"metadata,omitempty"`
+	SubAccountId int64             `json:"cid,omitempty"`
+	Metadata     map[string]string `json:"metadata,omitempty"`
 }
 
 type CreateTokenOption func(*Token)
@@ -31,6 +32,18 @@ func WithExpire(expire int64) CreateTokenOption {
 func WithTTL(ttl int64) CreateTokenOption {
 	return func(token *Token) {
 		token.TTL = ttl
+	}
+}
+
+func WithSubAccountId(subAccountId int64) CreateTokenOption {
+	return func(token *Token) {
+		token.SubAccountId = subAccountId
+	}
+}
+
+func WithMetadata(metadata map[string]string) CreateTokenOption {
+	return func(token *Token) {
+		token.Metadata = metadata
 	}
 }
 
