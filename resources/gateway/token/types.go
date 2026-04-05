@@ -13,6 +13,7 @@ type Token struct {
 
 	AccountId int64             `json:"cid,omitempty"`
 	Metadata  map[string]string `json:"metadata,omitempty"`
+	Access    *TokenAccess      `json:"access,omitempty"`
 }
 
 type CreateTokenOption func(*Token)
@@ -44,6 +45,12 @@ func WithAccountId(accountId int64) CreateTokenOption {
 func WithMetadata(metadata map[string]string) CreateTokenOption {
 	return func(token *Token) {
 		token.Metadata = metadata
+	}
+}
+
+func WithAccess(access TokenAccess) CreateTokenOption {
+	return func(token *Token) {
+		token.Access = &access
 	}
 }
 

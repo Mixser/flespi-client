@@ -63,9 +63,18 @@ func UpdateToken(c flespiapi.APIRequester, token Token) (*Token, error) {
 	response := tokensResponse{}
 
 	tokenId := token.Id
+	tokenKey := token.Key
+	tokenAccountId := token.AccountId
 
 	token.Id = 0
 	token.Key = ""
+	token.AccountId = 0
+
+	defer func() {
+		token.Id = tokenId
+		token.Key = tokenKey
+		token.AccountId = tokenAccountId
+	}()
 
 	err := c.RequestAPI("PUT", fmt.Sprintf("platform/tokens/%d", tokenId), token, &response)
 
