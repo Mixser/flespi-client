@@ -85,7 +85,7 @@ const (
 	ACEURIGwChannels        = "gw/channels"
 	ACEURIGwDevices         = "gw/devices"
 	ACEURIGwGroups          = "gw/groups"
-	ACEURIGwStreams          = "gw/streams"
+	ACEURIGwStreams         = "gw/streams"
 	ACEURIGwModems          = "gw/modems"
 	ACEURIGwCalcs           = "gw/calcs"
 	ACEURIGwPlugins         = "gw/plugins"
