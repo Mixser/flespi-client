@@ -21,6 +21,10 @@ func (gc *GeofenceClient) List() ([]Geofence, error) {
 	return ListGeofences(gc.c)
 }
 
+func (gc *GeofenceClient) GetById(geofenceId int64) (*Geofence, error) {
+	return GetGeofence(gc.c, geofenceId)
+}
+
 func (gc *GeofenceClient) Update(geofence Geofence) (*Geofence, error) {
 	return UpdateGeofence(gc.c, geofence)
 }

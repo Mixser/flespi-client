@@ -66,6 +66,10 @@ type Limit struct {
 	IdentityProvidersCount int64 `json:"identity_providers_count,omitempty"`
 
 	Metadata map[string]string `json:"metadata,omitempty"`
+
+	// AccountId is the subaccount that owns this limit (returned as "cid" in API responses).
+	// On creation it is passed via the x-flespi-cid header, not the request body.
+	AccountId int64 `json:"cid,omitempty"`
 }
 
 type CreateLimitOption func(*Limit)
@@ -209,6 +213,12 @@ func WithGrantLimit(count int64) CreateLimitOption {
 func WithIdentityProviderLimit(count int64) CreateLimitOption {
 	return func(limit *Limit) {
 		limit.IdentityProvidersCount = count
+	}
+}
+
+func WithAccountId(accountId int64) CreateLimitOption {
+	return func(limit *Limit) {
+		limit.AccountId = accountId
 	}
 }
 

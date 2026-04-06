@@ -28,6 +28,10 @@ type Calculator struct {
 	Timezone string `json:"timezone,omitempty"`
 
 	Metadata map[string]string `json:"metadata,omitempty"`
+
+	// AccountId is the subaccount that owns this calculator (returned as "cid" in API responses).
+	// On creation it is passed via the x-flespi-cid header, not the request body.
+	AccountId int64 `json:"cid,omitempty"`
 }
 
 func (c *Calculator) UnmarshalJSON(data []byte) error {
@@ -53,7 +57,8 @@ func (c *Calculator) UnmarshalJSON(data []byte) error {
 
 		Timezone string `json:"timezone,omitempty"`
 
-		Metadata map[string]string `json:"metadata,omitempty"`
+		Metadata  map[string]string `json:"metadata,omitempty"`
+		AccountId int64             `json:"cid"`
 	}
 
 	if err := json.Unmarshal(data, &raw); err != nil {
@@ -97,6 +102,7 @@ func (c *Calculator) UnmarshalJSON(data []byte) error {
 	c.Counters = counters
 
 	c.Metadata = raw.Metadata
+	c.AccountId = raw.AccountId
 
 	return nil
 }
@@ -179,6 +185,12 @@ func WithSelector(selector Selector) CreateCalculatorOption {
 func WithCounter(counter Counter) CreateCalculatorOption {
 	return func(calculator *Calculator) {
 		calculator.Counters = append(calculator.Counters, counter)
+	}
+}
+
+func WithAccountId(accountId int64) CreateCalculatorOption {
+	return func(calculator *Calculator) {
+		calculator.AccountId = accountId
 	}
 }
 

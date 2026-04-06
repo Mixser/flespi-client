@@ -19,9 +19,18 @@ func NewDevice(c flespiapi.APIRequester, name string, enabled bool, deviceTypeId
 
 	response := devicesResponse{}
 
-	err := c.RequestAPI("POST", "gw/devices", []Device{device}, &response)
+	var headers map[string]string
+	if device.AccountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", device.AccountId),
+		}
+	}
 
-	if err != nil {
+	accountId := device.AccountId
+	device.AccountId = 0
+	defer func() { device.AccountId = accountId }()
+
+	if err := c.RequestAPIWithHeaders("POST", "gw/devices", headers, []Device{device}, &response); err != nil {
 		return nil, err
 	}
 
@@ -43,7 +52,7 @@ func ListDevices(c flespiapi.APIRequester) ([]Device, error) {
 func GetDevice(c flespiapi.APIRequester, deviceId int64) (*Device, error) {
 	response := devicesResponse{}
 
-	err := c.RequestAPI("GET", fmt.Sprintf("gw/devices/%d", deviceId), nil, &response)
+	err := c.RequestAPI("GET", fmt.Sprintf("gw/devices/%d?fields=id,name,enabled,device_type_id,messages_ttl,messages_rotate,media_ttl,media_rotate,configuration,metadata,cid", deviceId), nil, &response)
 
 	if err != nil {
 		return nil, err
@@ -56,11 +65,24 @@ func UpdateDevice(c flespiapi.APIRequester, device Device) (*Device, error) {
 	response := devicesResponse{}
 
 	deviceId := device.Id
+	accountId := device.AccountId
+
 	device.Id = 0
+	device.AccountId = 0
 
-	err := c.RequestAPI("PUT", fmt.Sprintf("gw/devices/%d", deviceId), device, &response)
+	defer func() {
+		device.Id = deviceId
+		device.AccountId = accountId
+	}()
 
-	if err != nil {
+	var headers map[string]string
+	if accountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", accountId),
+		}
+	}
+
+	if err := c.RequestAPIWithHeaders("PUT", fmt.Sprintf("gw/devices/%d", deviceId), headers, device, &response); err != nil {
 		return nil, err
 	}
 
