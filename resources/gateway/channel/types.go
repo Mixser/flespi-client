@@ -13,7 +13,13 @@ type Channel struct {
 
 	MessagesTTL int64 `json:"messages_ttl,omitempty"`
 
+	// Metadata is intentionally narrowed to map[string]string for Terraform compatibility.
+	// The flespi API allows arbitrary JSON values, but HCL maps only support string values.
 	Metadata map[string]string `json:"metadata,omitempty"`
+
+	// AccountId is the subaccount that owns this channel (returned as "cid" in API responses).
+	// On creation it is passed via the x-flespi-cid header, not the request body.
+	AccountId int64 `json:"cid,omitempty"`
 }
 
 type CreateChannelOption func(*Channel)
@@ -40,7 +46,16 @@ func WithConfiguration(configuration map[string]interface{}) CreateChannelOption
 
 func WithConfigurationItem(key string, value interface{}) CreateChannelOption {
 	return func(channel *Channel) {
+		if channel.Configuration == nil {
+			channel.Configuration = make(map[string]interface{})
+		}
 		channel.Configuration[key] = value
+	}
+}
+
+func WithAccountId(accountId int64) CreateChannelOption {
+	return func(channel *Channel) {
+		channel.AccountId = accountId
 	}
 }
 
@@ -52,6 +67,9 @@ func WithMetadata(metadata map[string]string) CreateChannelOption {
 
 func WithMetadataItem(key, value string) CreateChannelOption {
 	return func(channel *Channel) {
+		if channel.Metadata == nil {
+			channel.Metadata = make(map[string]string)
+		}
 		channel.Metadata[key] = value
 	}
 }

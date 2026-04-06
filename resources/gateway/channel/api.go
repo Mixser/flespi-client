@@ -39,9 +39,21 @@ func NewChannelWithProtocolId(c flespiapi.APIRequester, name string, protocolId 
 func newChannel(c flespiapi.APIRequester, channel Channel) (*Channel, error) {
 	response := channelsResponse{}
 
-	err := c.RequestAPI("POST", "gw/channels", []Channel{channel}, &response)
+	var headers map[string]string
+	if channel.AccountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", channel.AccountId),
+		}
+	}
 
-	if err != nil {
+	// AccountId (cid) is conveyed via header on creation; zero it out so it is not sent in the request body.
+	accountId := channel.AccountId
+	channel.AccountId = 0
+	defer func() {
+		channel.AccountId = accountId
+	}()
+
+	if err := c.RequestAPIWithHeaders("POST", "gw/channels", headers, []Channel{channel}, &response); err != nil {
 		return nil, err
 	}
 
@@ -63,7 +75,7 @@ func ListChannels(c flespiapi.APIRequester) ([]Channel, error) {
 func GetChannel(c flespiapi.APIRequester, channelId int64) (*Channel, error) {
 	response := channelsResponse{}
 
-	err := c.RequestAPI("GET", fmt.Sprintf("gw/channels/%d?fields=id,name,protocol_id,protocol_name,messages_ttl,enabled,configuration", channelId), nil, &response)
+	err := c.RequestAPI("GET", fmt.Sprintf("gw/channels/%d?fields=id,name,protocol_id,protocol_name,messages_ttl,enabled,configuration,metadata,cid", channelId), nil, &response)
 
 	if err != nil {
 		return nil, err
@@ -76,11 +88,28 @@ func UpdateChannel(c flespiapi.APIRequester, channel Channel) (*Channel, error) 
 	response := channelsResponse{}
 
 	channelId := channel.Id
+	accountId := channel.AccountId
+	protocolName := channel.ProtocolName
+
 	channel.Id = 0
 	// ProtocolName is read-only for updates, clear it before sending
 	channel.ProtocolName = ""
+	channel.AccountId = 0
 
-	err := c.RequestAPI("PUT", fmt.Sprintf("gw/channels/%d", channelId), channel, &response)
+	defer func() {
+		channel.Id = channelId
+		channel.AccountId = accountId
+		channel.ProtocolName = protocolName
+	}()
+
+	var headers map[string]string
+	if accountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", accountId),
+		}
+	}
+
+	err := c.RequestAPIWithHeaders("PUT", fmt.Sprintf("gw/channels/%d", channelId), headers, channel, &response)
 
 	if err != nil {
 		return nil, err
