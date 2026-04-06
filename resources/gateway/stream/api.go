@@ -19,9 +19,18 @@ func NewStream(c flespiapi.APIRequester, name string, protocolId int64, options 
 
 	response := streamsResponse{}
 
-	err := c.RequestAPI("POST", "gw/streams", []Stream{stream}, &response)
+	var headers map[string]string
+	if stream.AccountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", stream.AccountId),
+		}
+	}
 
-	if err != nil {
+	accountId := stream.AccountId
+	stream.AccountId = 0
+	defer func() { stream.AccountId = accountId }()
+
+	if err := c.RequestAPIWithHeaders("POST", "gw/streams", headers, []Stream{stream}, &response); err != nil {
 		return nil, err
 	}
 
@@ -31,7 +40,7 @@ func NewStream(c flespiapi.APIRequester, name string, protocolId int64, options 
 func GetStream(c flespiapi.APIRequester, streamId int64) (*Stream, error) {
 	response := streamsResponse{}
 
-	err := c.RequestAPI("GET", fmt.Sprintf("gw/streams/%d", streamId), nil, &response)
+	err := c.RequestAPI("GET", fmt.Sprintf("gw/streams/%d?fields=id,name,protocol_id,enabled,queue_ttl,validate_message,configuration,metadata,cid", streamId), nil, &response)
 
 	if err != nil {
 		return nil, err
@@ -58,17 +67,29 @@ func UpdateStream(c flespiapi.APIRequester, stream Stream) (*Stream, error) {
 	}
 
 	streamId := stream.Id
+	accountId := stream.AccountId
+
 	stream.Id = 0
+	stream.AccountId = 0
+
+	defer func() {
+		stream.Id = streamId
+		stream.AccountId = accountId
+	}()
+
+	var headers map[string]string
+	if accountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", accountId),
+		}
+	}
 
 	response := streamsResponse{}
 
-	err := c.RequestAPI("PUT", fmt.Sprintf("gw/streams/%d", streamId), stream, &response)
-
-	if err != nil {
+	if err := c.RequestAPIWithHeaders("PUT", fmt.Sprintf("gw/streams/%d", streamId), headers, stream, &response); err != nil {
 		return nil, err
 	}
 
-	stream.Id = streamId
 	return &response.Streams[0], nil
 }
 

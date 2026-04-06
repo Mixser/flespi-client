@@ -13,11 +13,20 @@ func NewSubaccount(client flespiapi.APIRequester, name string, options ...Create
 		opt(&subaccount)
 	}
 
+	var headers map[string]string
+	if subaccount.AccountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", subaccount.AccountId),
+		}
+	}
+
+	accountId := subaccount.AccountId
+	subaccount.AccountId = 0
+	defer func() { subaccount.AccountId = accountId }()
+
 	response := subaccountsResponse{}
 
-	err := client.RequestAPI("POST", "platform/subaccounts", []Subaccount{subaccount}, &response)
-
-	if err != nil {
+	if err := client.RequestAPIWithHeaders("POST", "platform/subaccounts", headers, []Subaccount{subaccount}, &response); err != nil {
 		return nil, err
 	}
 
@@ -40,7 +49,7 @@ func ListSubaccounts(client flespiapi.APIRequester) ([]Subaccount, error) {
 func GetSubaccount(client flespiapi.APIRequester, subaccountId int64) (*Subaccount, error) {
 	response := subaccountsResponse{}
 
-	err := client.RequestAPI("GET", fmt.Sprintf("platform/subaccounts/%d", subaccountId), nil, &response)
+	err := client.RequestAPI("GET", fmt.Sprintf("platform/subaccounts/%d?fields=id,name,limit_id,metadata,cid", subaccountId), nil, &response)
 
 	if err != nil {
 		return nil, err
@@ -54,16 +63,27 @@ func UpdateSubaccount(client flespiapi.APIRequester, subaccount Subaccount) (*Su
 		return nil, fmt.Errorf("id should be defined before update")
 	}
 
+	subaccountId := subaccount.Id
+	accountId := subaccount.AccountId
+
+	subaccount.Id = 0
+	subaccount.AccountId = 0
+
+	defer func() {
+		subaccount.Id = subaccountId
+		subaccount.AccountId = accountId
+	}()
+
+	var headers map[string]string
+	if accountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", accountId),
+		}
+	}
+
 	response := subaccountsResponse{}
 
-	subaccountId := subaccount.Id
-	subaccount.Id = 0
-
-	err := client.RequestAPI("PUT", fmt.Sprintf("platform/subaccounts/%d", subaccountId), subaccount, &response)
-
-	subaccount.Id = subaccountId
-
-	if err != nil {
+	if err := client.RequestAPIWithHeaders("PUT", fmt.Sprintf("platform/subaccounts/%d", subaccountId), headers, subaccount, &response); err != nil {
 		return nil, err
 	}
 

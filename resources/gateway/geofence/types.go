@@ -14,6 +14,10 @@ type Geofence struct {
 	Priority int64 `json:"priority"`
 
 	Geometry GeofenceGeometry `json:"geometry"`
+
+	// AccountId is the subaccount that owns this geofence (returned as "cid" in API responses).
+	// On creation it is passed via the x-flespi-cid header, not the request body.
+	AccountId int64 `json:"cid,omitempty"`
 }
 
 func (g *Geofence) UnmarshalJSON(data []byte) error {
@@ -24,7 +28,8 @@ func (g *Geofence) UnmarshalJSON(data []byte) error {
 		Enabled  bool  `json:"enabled"`
 		Priority int64 `json:"priority"`
 
-		Geometry json.RawMessage `json:"geometry"`
+		Geometry  json.RawMessage `json:"geometry"`
+		AccountId int64           `json:"cid"`
 	}
 
 	if err := json.Unmarshal(data, &raw); err != nil {
@@ -35,6 +40,7 @@ func (g *Geofence) UnmarshalJSON(data []byte) error {
 	g.Name = raw.Name
 	g.Enabled = raw.Enabled
 	g.Priority = raw.Priority
+	g.AccountId = raw.AccountId
 
 	geometry, err := UnmarshalGeometry(raw.Geometry)
 
@@ -114,5 +120,11 @@ func WithPriority(priority int64) CreateGeofenceOption {
 func WithGeometry(geometry GeofenceGeometry) CreateGeofenceOption {
 	return func(g *Geofence) {
 		g.Geometry = geometry
+	}
+}
+
+func WithAccountId(accountId int64) CreateGeofenceOption {
+	return func(g *Geofence) {
+		g.AccountId = accountId
 	}
 }

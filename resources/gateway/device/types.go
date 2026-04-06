@@ -17,6 +17,10 @@ type Device struct {
 	MediaRotate int64 `json:"media_rotate,omitempty"`
 
 	Metadata map[string]string `json:"metadata,omitempty"`
+
+	// AccountId is the subaccount that owns this device (returned as "cid" in API responses).
+	// On creation it is passed via the x-flespi-cid header, not the request body.
+	AccountId int64 `json:"cid,omitempty"`
 }
 
 type CreateDeviceOption func(*Device)
@@ -40,6 +44,12 @@ func WithMedia(ttl int64, rotate int64) CreateDeviceOption {
 	return func(device *Device) {
 		device.MediaTTL = ttl
 		device.MediaRotate = rotate
+	}
+}
+
+func WithAccountId(accountId int64) CreateDeviceOption {
+	return func(device *Device) {
+		device.AccountId = accountId
 	}
 }
 

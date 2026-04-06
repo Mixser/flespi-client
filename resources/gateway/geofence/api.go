@@ -8,13 +8,25 @@ import (
 func ListGeofences(c flespiapi.APIRequester) ([]Geofence, error) {
 	response := geofencesResponse{}
 
-	err := c.RequestAPI("GET", "gw/geofences/all?fields=id,name,enabled,priority,geometry", nil, &response)
+	err := c.RequestAPI("GET", "gw/geofences/all?fields=id,name,enabled,priority,geometry,cid", nil, &response)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return response.Geofences, nil
+}
+
+func GetGeofence(c flespiapi.APIRequester, geofenceId int64) (*Geofence, error) {
+	response := geofencesResponse{}
+
+	err := c.RequestAPI("GET", fmt.Sprintf("gw/geofences/%d?fields=id,name,enabled,priority,geometry,cid", geofenceId), nil, &response)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &response.Geofences[0], nil
 }
 
 func NewGeofence(c flespiapi.APIRequester, name string, options ...CreateGeofenceOption) (*Geofence, error) {
@@ -24,11 +36,20 @@ func NewGeofence(c flespiapi.APIRequester, name string, options ...CreateGeofenc
 		opt(&geofence)
 	}
 
+	var headers map[string]string
+	if geofence.AccountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", geofence.AccountId),
+		}
+	}
+
+	accountId := geofence.AccountId
+	geofence.AccountId = 0
+	defer func() { geofence.AccountId = accountId }()
+
 	response := geofencesResponse{}
 
-	err := c.RequestAPI("POST", "gw/geofences?fields=id,name,enabled,priority,geometry", []Geofence{geofence}, &response)
-
-	if err != nil {
+	if err := c.RequestAPIWithHeaders("POST", "gw/geofences?fields=id,name,enabled,priority,geometry,cid", headers, []Geofence{geofence}, &response); err != nil {
 		return nil, err
 	}
 
@@ -39,11 +60,24 @@ func UpdateGeofence(c flespiapi.APIRequester, geofence Geofence) (*Geofence, err
 	response := geofencesResponse{}
 
 	geofenceId := geofence.Id
+	accountId := geofence.AccountId
+
 	geofence.Id = 0
+	geofence.AccountId = 0
 
-	err := c.RequestAPI("PUT", fmt.Sprintf("gw/geofences/%d", geofenceId), geofence, &response)
+	defer func() {
+		geofence.Id = geofenceId
+		geofence.AccountId = accountId
+	}()
 
-	if err != nil {
+	var headers map[string]string
+	if accountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", accountId),
+		}
+	}
+
+	if err := c.RequestAPIWithHeaders("PUT", fmt.Sprintf("gw/geofences/%d", geofenceId), headers, geofence, &response); err != nil {
 		return nil, err
 	}
 

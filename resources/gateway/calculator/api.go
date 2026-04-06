@@ -15,9 +15,20 @@ func NewCalculator(client flespiapi.APIRequester, name string, options ...Create
 		opt(&calc)
 	}
 
+	var headers map[string]string
+	if calc.AccountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", calc.AccountId),
+		}
+	}
+
+	accountId := calc.AccountId
+	calc.AccountId = 0
+	defer func() { calc.AccountId = accountId }()
+
 	response := calculatorsResponse{}
 
-	if err := client.RequestAPI("POST", "gw/calcs", []Calculator{calc}, &response); err != nil {
+	if err := client.RequestAPIWithHeaders("POST", "gw/calcs", headers, []Calculator{calc}, &response); err != nil {
 		return nil, err
 	}
 
@@ -37,7 +48,7 @@ func ListCalculators(client flespiapi.APIRequester) ([]Calculator, error) {
 func GetCalculator(client flespiapi.APIRequester, calculatorId int64) (*Calculator, error) {
 	response := calculatorsResponse{}
 
-	if err := client.RequestAPI("GET", fmt.Sprintf("gw/calcs/%d", calculatorId), nil, &response); err != nil {
+	if err := client.RequestAPI("GET", fmt.Sprintf("gw/calcs/%d?fields=id,name,messages_source,update_period,update_delay,update_onchange,intervals_ttl,intervals_rotate,selectors,counters,validate_interval,validate_message,timezone,metadata,cid", calculatorId), nil, &response); err != nil {
 		return nil, err
 	}
 
@@ -48,13 +59,26 @@ func UpdateCalculator(client flespiapi.APIRequester, calc Calculator) (*Calculat
 	response := calculatorsResponse{}
 
 	calculatorId := calc.Id
-	calc.Id = 0
+	accountId := calc.AccountId
 
-	if err := client.RequestAPI("PUT", fmt.Sprintf("gw/calcs/%d", calculatorId), calc, &response); err != nil {
-		return nil, err
+	calc.Id = 0
+	calc.AccountId = 0
+
+	defer func() {
+		calc.Id = calculatorId
+		calc.AccountId = accountId
+	}()
+
+	var headers map[string]string
+	if accountId != 0 {
+		headers = map[string]string{
+			"x-flespi-cid": fmt.Sprintf("%d", accountId),
+		}
 	}
 
-	calc.Id = calculatorId
+	if err := client.RequestAPIWithHeaders("PUT", fmt.Sprintf("gw/calcs/%d", calculatorId), headers, calc, &response); err != nil {
+		return nil, err
+	}
 
 	return &response.Calculators[0], nil
 }
